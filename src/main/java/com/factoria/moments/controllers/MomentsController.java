@@ -21,12 +21,11 @@ public class MomentsController {
 
     @GetMapping("/moments")
     List<Moment> getMoments(){
-        var momentsRepository = new FakeMomentsRepository();
-        var moments = momentsRepository.getMoments();
+        var moments = this.momentsRepository.findAll();
         return moments;
     }
     //moments/1
-    @GetMapping("/moments/{id}")
+    /*@GetMapping("/moments/{id}")
     Moment getMomentById(@PathVariable Long id){
         var momentsRepository = new FakeMomentsRepository();
         Moment moment = momentsRepository.getMomentById(id);
@@ -38,7 +37,7 @@ public class MomentsController {
         var momentsRepository = new FakeMomentsRepository();
         var searchCollection = momentsRepository.getMomentBySearch(search);
         return searchCollection;
-    }
+    }*/
 
 }
 
