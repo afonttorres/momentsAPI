@@ -51,6 +51,13 @@ public class MomentsController {
         var searchCollection = this.momentsRepository.findByTitle(search);
         return searchCollection;
     }
+
+    @DeleteMapping("/moments/{id}")
+    public boolean deleteMoment(@PathVariable Long id) {
+        Moment moment = this.momentsRepository.findById(id).get();
+        this.momentsRepository.delete(moment);
+        return true;
+    }
 }
 
 
