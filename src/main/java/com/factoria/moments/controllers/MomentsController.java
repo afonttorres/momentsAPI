@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins="http://localhost:3000/")
 public class MomentsController {
 
     private IMomentsRepository momentsRepository;
@@ -36,24 +37,38 @@ public class MomentsController {
     }
     @PutMapping("/moments/{id}")
     Moment updateMoment(@PathVariable Long id, @RequestBody Moment momentData){
-
         Moment moment = this.momentsRepository.findById(id).get();
-
-        moment.setTitle(momentData.getTitle());;
+        moment.setLocation(momentData.getLocation());;
         moment.setDescription(momentData.getDescription());
         moment.setImgUrl(momentData.getImgUrl());
         final Moment updatedMoment = this.momentsRepository.save(moment);
         return updatedMoment;
     }
-    //moments?search={search}
-   @GetMapping(value="/moments", params="search")
-    List<Moment> getMomentSearch(@RequestParam String search){
-        var searchCollection = this.momentsRepository.findByTitle(search);
+
+    @PatchMapping("/moments/{id}/{action}")
+    Moment saveMoment(@PathVariable Long id, @PathVariable String action){
+        Moment moment = this.momentsRepository.findById(id).get();
+        if(action.equals("like")){ moment.setLiked(!moment.isLiked());}
+        if(action.equals("save")){ moment.setSaved(!moment.isSaved());}
+        final Moment updatedMoment = this.momentsRepository.save(moment);
+        return updatedMoment;
+    }
+
+//    moments?search={search}
+//   @GetMapping(value="/moments", params="search")
+//    List<Moment> getMomentSearch(@RequestParam String search){
+//        var searchCollection = this.momentsRepository.findByDescription(search);
+//        return searchCollection;
+//    }
+
+    @GetMapping(value="/moments", params="search")
+    List<Moment> getSearch(@RequestParam String search){
+        var searchCollection = this.momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(search);
         return searchCollection;
     }
 
     @DeleteMapping("/moments/{id}")
-    public boolean deleteMoment(@PathVariable Long id) {
+    boolean deleteMoment(@PathVariable Long id) {
         Moment moment = this.momentsRepository.findById(id).get();
         this.momentsRepository.delete(moment);
         return true;

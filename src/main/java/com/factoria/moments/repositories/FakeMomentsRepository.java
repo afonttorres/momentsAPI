@@ -17,17 +17,6 @@ import java.util.stream.Collectors;
 
 public class FakeMomentsRepository {
 
-    public List<Moment> findAll(){
-        return getMomentList();
-    }
 
-    private List<Moment> getMomentList(){
-        Moment moment1 = new Moment("url", "des", "tile", 1L);
-        Moment moment2 = new Moment("url", "des", "tile", 2L);
-        Moment moment3 = new Moment("url", "des", "tile", 3L);
-        Moment moment4 = new Moment("url", "des", "tile", 4L);
-        List<Moment> moments = List.of(moment1, moment2, moment3, moment4);
-        return moments;
-    }
 
 }

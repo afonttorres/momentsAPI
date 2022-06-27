@@ -15,7 +15,12 @@ import java.util.List;
 public class Moment {
     private String imgUrl;
     private String description;
-    private String title;
+    private String location;
+    private boolean isLiked = false;
+    private boolean isSaved = false;
+    private int likes = 48;
+    private int saves = 2;
+    private int comments = 13;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
