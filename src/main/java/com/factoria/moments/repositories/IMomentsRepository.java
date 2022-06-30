@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface IMomentsRepository extends JpaRepository <Moment, Long> {
     List<Moment> findByDescription(String search);
-
     @Query("select m from Moment m where m.description like %:search% or m.imgUrl like %:search% or m.location like %:search%")
     List <Moment> findByDescriptionOrImgUrlOrLocationContaining(@Param("search") String search);
 

@@ -45,21 +45,29 @@ public class MomentsController {
         return updatedMoment;
     }
 
-    @PatchMapping("/moments/{id}/{action}")
-    Moment saveMoment(@PathVariable Long id, @PathVariable String action){
+    @PatchMapping("/moments/{id}/like")
+    Moment likeMoment(@PathVariable Long id){
         Moment moment = this.momentsRepository.findById(id).get();
-        if(action.equals("like")){ moment.setLiked(!moment.isLiked());}
-        if(action.equals("save")){ moment.setSaved(!moment.isSaved());}
+        moment.setLiked(!moment.isLiked());
         final Moment updatedMoment = this.momentsRepository.save(moment);
         return updatedMoment;
     }
 
-//    moments?search={search}
-//   @GetMapping(value="/moments", params="search")
-//    List<Moment> getMomentSearch(@RequestParam String search){
-//        var searchCollection = this.momentsRepository.findByDescription(search);
-//        return searchCollection;
-//    }
+    @PatchMapping("/moments/{id}/save")
+    Moment saveMoment(@PathVariable Long id){
+        Moment moment = this.momentsRepository.findById(id).get();
+        moment.setSaved(!moment.isSaved());
+        final Moment updatedMoment = this.momentsRepository.save(moment);
+        return updatedMoment;
+    }
+
+
+   /*moments?search={search}
+   @GetMapping(value="/moments", params="search")
+   List<Moment> getMomentSearch(@RequestParam String search){
+       var searchCollection = this.momentsRepository.findByDescription(search);
+       return searchCollection;
+   }*/
 
     @GetMapping(value="/moments", params="search")
     List<Moment> getSearch(@RequestParam String search){
