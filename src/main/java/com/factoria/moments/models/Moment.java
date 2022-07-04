@@ -22,6 +22,7 @@ public class Moment {
     private boolean isSaved = false;
     private int likes = 48;
     private int saves = 2;
+    private int userId;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

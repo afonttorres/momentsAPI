@@ -7,4 +7,5 @@ public class CommentRequestDto {
     private String comment;
     private boolean isLiked;
     private Long momentId;
+    private Long userId;
 }

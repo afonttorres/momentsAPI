@@ -37,10 +37,13 @@ public class MomentsController {
     }
     @PutMapping("/moments/{id}")
     Moment updateMoment(@PathVariable Long id, @RequestBody Moment momentData){
+
         Moment moment = this.momentsRepository.findById(id).get();
+        System.out.println(momentData.getId());
         moment.setLocation(momentData.getLocation());;
         moment.setDescription(momentData.getDescription());
         moment.setImgUrl(momentData.getImgUrl());
+        moment.setUserId(momentData.getUserId());
         final Moment updatedMoment = this.momentsRepository.save(moment);
         return updatedMoment;
     }
@@ -60,14 +63,6 @@ public class MomentsController {
         final Moment updatedMoment = this.momentsRepository.save(moment);
         return updatedMoment;
     }
-
-
-   /*moments?search={search}
-   @GetMapping(value="/moments", params="search")
-   List<Moment> getMomentSearch(@RequestParam String search){
-       var searchCollection = this.momentsRepository.findByDescription(search);
-       return searchCollection;
-   }*/
 
     @GetMapping(value="/moments", params="search")
     List<Moment> getSearch(@RequestParam String search){
