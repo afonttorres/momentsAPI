@@ -1,9 +1,9 @@
-package com.factoria.moments.dtos;
+package com.factoria.moments.dtos.user.response;
 
 import lombok.Data;
 
 @Data
-public class UserResDto {
+public class UserResDtoMoment {
     private String username;
     private String avatarUrl;
     private String name;

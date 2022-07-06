@@ -1,10 +1,12 @@
 package com.factoria.moments.controllers;
 
-import com.factoria.moments.dtos.CommentRequestDto;
+import com.factoria.moments.dtos.comment.CommentRequestDto;
+import com.factoria.moments.dtos.comment.CommentResDto;
 import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.repositories.ICommentRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
+import com.factoria.moments.services.comment.ICommentService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,27 +15,21 @@ import java.util.List;
 @CrossOrigin(origins="http://localhost:3000/")
 public class CommentController {
 
-    private ICommentRepository commentRepository;
-    private IMomentsRepository momentsRepository;
+   ICommentService commentService;
 
-    public CommentController (ICommentRepository commentRepository, IMomentsRepository momentsRepository){
-        this.commentRepository = commentRepository;
-        this.momentsRepository = momentsRepository;
+    public CommentController (ICommentService commentService){
+        this.commentService = commentService;
     }
 
     @GetMapping("/comments")
-    List<Comment> getAll(){
-        return this.commentRepository.findAll();
+    List<CommentResDto> getAll(){
+        return commentService.findAll();
     }
 
     @PostMapping("/comments")
-    Comment createComment(@RequestBody CommentRequestDto newComment){
-        Comment comment = new Comment();
-        Moment moment = this.momentsRepository.findById(newComment.getMomentId()).get();
-        comment.setMoment(moment);
-        comment.setComment(newComment.getComment());
-        comment.setUserId(newComment.getUserId());
-        this.commentRepository.save(comment);
-        return comment;
+    CommentResDto createComment(@RequestBody CommentRequestDto newComment){
+        return commentService.create(newComment);
     }
+
+
 }

@@ -1,7 +1,7 @@
-package com.factoria.moments.services;
+package com.factoria.moments.services.moment;
 
-import com.factoria.moments.dtos.MomentReqDto;
-import com.factoria.moments.dtos.MomentResDto;
+import com.factoria.moments.dtos.moment.MomentReqDto;
+import com.factoria.moments.dtos.moment.MomentResDto;
 import com.factoria.moments.models.User;
 
 import java.util.List;

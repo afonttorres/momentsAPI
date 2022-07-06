@@ -1,5 +1,6 @@
-package com.factoria.moments.dtos;
+package com.factoria.moments.dtos.moment;
 
+import com.factoria.moments.dtos.user.response.UserResDtoMoment;
 import lombok.Data;
 
 @Data
@@ -11,7 +12,7 @@ public class MomentResDto {
     private boolean isSaved;
     private int likes;
     private int saves;
-    private UserResDto creator;
+    private UserResDtoMoment creator;
     private int commentsCount;
     private Long id;
 }

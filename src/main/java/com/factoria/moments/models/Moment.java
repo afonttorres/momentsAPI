@@ -1,6 +1,5 @@
 package com.factoria.moments.models;
 
-import com.factoria.moments.dtos.UserResDto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;

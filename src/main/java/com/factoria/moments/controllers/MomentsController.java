@@ -1,13 +1,11 @@
 package com.factoria.moments.controllers;
 
-import com.factoria.moments.dtos.MomentReqDto;
-import com.factoria.moments.dtos.MomentResDto;
-import com.factoria.moments.dtos.UserPetitionReqDto;
-import com.factoria.moments.dtos.UserReqDto;
-import com.factoria.moments.models.Moment;
+import com.factoria.moments.dtos.moment.MomentReqDto;
+import com.factoria.moments.dtos.moment.MomentResDto;
+import com.factoria.moments.dtos.user.request.UserPetitionReqDto;
 import com.factoria.moments.models.User;
-import com.factoria.moments.services.IMomentService;
-import com.factoria.moments.services.IUserService;
+import com.factoria.moments.services.moment.IMomentService;
+import com.factoria.moments.services.user.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.factoria.moments.dtos;
+package com.factoria.moments.dtos.user.request;
 
 import lombok.Data;
 

@@ -15,10 +15,11 @@ public class Comment {
     private Long id;
     private String comment;
     private boolean isLiked;
-    private Long userId;
-
     @ManyToOne
     @JoinColumn(name = "moment_id")
-    @JsonIgnore
     private Moment moment;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
 }

@@ -1,4 +1,4 @@
-package com.factoria.moments.dtos;
+package com.factoria.moments.dtos.moment;
 
 import com.factoria.moments.models.User;
 import lombok.Data;

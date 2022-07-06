@@ -1,8 +1,8 @@
-package com.factoria.moments.services;
+package com.factoria.moments.services.moment;
 
-import com.factoria.moments.dtos.MomentReqDto;
-import com.factoria.moments.dtos.MomentResDto;
-import com.factoria.moments.dtos.UserResDto;
+import com.factoria.moments.dtos.moment.MomentReqDto;
+import com.factoria.moments.dtos.moment.MomentResDto;
+import com.factoria.moments.dtos.user.response.UserResDtoMoment;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IMomentsRepository;
@@ -48,7 +48,7 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto update(MomentReqDto momentReqDto, Long id, User auth) {
-        if(id != auth.getId()) return null;
+        if(momentReqDto.getUserId() != auth.getId()) return null;
         Moment moment = momentsRepository.findById(id).get();
         moment = this.castReqMomentToMoment(moment, momentReqDto, auth);
         momentsRepository.save(moment);
@@ -58,8 +58,8 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto like(Long id, User auth) {
-        if(id == auth.getId()) return null;
         Moment moment = momentsRepository.findById(id).get();
+        if(moment.getCreator().getId() == auth.getId()) return null;
         moment.setLiked(!moment.isLiked());
         momentsRepository.save(moment);
         MomentResDto momentRes = this.castMomentToResMoment(moment);
@@ -68,8 +68,8 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto save(Long id, User auth) {
-        if(id == auth.getId()) return null;
         Moment moment = momentsRepository.findById(id).get();
+        if(moment.getCreator().getId() == auth.getId()) return null;
         moment.setSaved(!moment.isSaved());
         momentsRepository.save(moment);
         MomentResDto momentRes = this.castMomentToResMoment(moment);
@@ -115,13 +115,13 @@ public class MomentService implements IMomentService{
         resDto.setSaves(moment.getSaves());
         resDto.setCommentsCount(moment.commentsCount());
         resDto.setId(moment.getId());
-        UserResDto creator = this.castUserToResUser(moment.getCreator());
+        UserResDtoMoment creator = this.castUserToResUser(moment.getCreator());
         resDto.setCreator(creator);
         return resDto;
     }
 
-    private UserResDto castUserToResUser(User user){
-        UserResDto resDto = new UserResDto();
+    private UserResDtoMoment castUserToResUser(User user){
+        UserResDtoMoment resDto = new UserResDtoMoment();
         resDto.setName(user.getName());
         resDto.setUsername(user.getUsername());
         resDto.setAvatarUrl(user.getAvatarUrl());
