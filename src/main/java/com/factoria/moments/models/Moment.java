@@ -1,5 +1,6 @@
 package com.factoria.moments.models;
 
+import com.factoria.moments.dtos.UserResDto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +23,9 @@ public class Moment {
     private boolean isSaved = false;
     private int likes = 48;
     private int saves = 2;
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

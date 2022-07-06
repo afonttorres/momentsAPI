@@ -1,81 +1,78 @@
 package com.factoria.moments.controllers;
 
+import com.factoria.moments.dtos.MomentReqDto;
+import com.factoria.moments.dtos.MomentResDto;
+import com.factoria.moments.dtos.UserPetitionReqDto;
+import com.factoria.moments.dtos.UserReqDto;
 import com.factoria.moments.models.Moment;
-import com.factoria.moments.repositories.IMomentsRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.factoria.moments.models.User;
+import com.factoria.moments.services.IMomentService;
+import com.factoria.moments.services.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins="http://localhost:3000/")
 public class MomentsController {
 
-    private IMomentsRepository momentsRepository;
+    IMomentService momentService;
+    IUserService userService;
 
-    @Autowired
-    public MomentsController(IMomentsRepository momentsRepository) {
-        this.momentsRepository = momentsRepository;
+    public MomentsController(IMomentService momentService, IUserService userService){
+        this.momentService = momentService;
+        this.userService = userService;
+    }
+
+    private User getAuth(Long id){
+        return userService.findById(id);
     }
 
     @GetMapping("/moments")
-    List<Moment> getMoments(){
-        var moments = this.momentsRepository.findAll();
-        return moments;
+    List<MomentResDto> getAll(){
+        return momentService.findAll();
     }
-    //moments/1
-    @GetMapping("/moments/{id}")
-    Moment getMomentById(@PathVariable Long id){
-        var moment = this.momentsRepository.findById(id).get();
-        return moment;
-    }
-    @PostMapping("/moments")
-    Moment createMoment(@RequestBody Moment newMoment){
-        var moment = this.momentsRepository.save(newMoment);
-        return moment;
-    }
-    @PutMapping("/moments/{id}")
-    Moment updateMoment(@PathVariable Long id, @RequestBody Moment momentData){
 
-        Moment moment = this.momentsRepository.findById(id).get();
-        System.out.println(momentData.getId());
-        moment.setLocation(momentData.getLocation());;
-        moment.setDescription(momentData.getDescription());
-        moment.setImgUrl(momentData.getImgUrl());
-        moment.setUserId(momentData.getUserId());
-        final Moment updatedMoment = this.momentsRepository.save(moment);
-        return updatedMoment;
+    @GetMapping("/moments/{id}")
+    MomentResDto getById(@PathVariable Long id){
+        return momentService.findById(id);
+    }
+
+    @PostMapping("/moments")
+    MomentResDto create(@RequestBody MomentReqDto momentReqDto){
+        User auth = this.getAuth(momentReqDto.getUserId());
+        return momentService.create(momentReqDto, auth);
+    }
+
+    @PutMapping("/moments/{id}")
+    MomentResDto update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
+        User auth = this.getAuth(momentReqDto.getUserId());
+        return momentService.update(momentReqDto,id, auth);
     }
 
     @PatchMapping("/moments/{id}/like")
-    Moment likeMoment(@PathVariable Long id){
-        Moment moment = this.momentsRepository.findById(id).get();
-        moment.setLiked(!moment.isLiked());
-        final Moment updatedMoment = this.momentsRepository.save(moment);
-        return updatedMoment;
+    MomentResDto like(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
+        User auth = this.getAuth(userPetitionReqDto.getId());
+        return momentService.like(id, auth);
     }
 
     @PatchMapping("/moments/{id}/save")
-    Moment saveMoment(@PathVariable Long id){
-        Moment moment = this.momentsRepository.findById(id).get();
-        moment.setSaved(!moment.isSaved());
-        final Moment updatedMoment = this.momentsRepository.save(moment);
-        return updatedMoment;
-    }
-
-    @GetMapping(value="/moments", params="search")
-    List<Moment> getSearch(@RequestParam String search){
-        var searchCollection = this.momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(search);
-        return searchCollection;
+    MomentResDto save(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
+        User auth = this.getAuth(userPetitionReqDto.getId());
+        return momentService.save(id, auth);
     }
 
     @DeleteMapping("/moments/{id}")
-    boolean deleteMoment(@PathVariable Long id) {
-        Moment moment = this.momentsRepository.findById(id).get();
-        this.momentsRepository.delete(moment);
-        return true;
+    MomentResDto delete(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
+        User auth = this.getAuth(userPetitionReqDto.getId());
+        return momentService.delete(id, auth);
     }
+
+    @GetMapping(value="/moments", params="search")
+    List<MomentResDto> getSearch(@RequestParam String search){
+        return momentService.findByDescriptionOrImgUrlOrLocationContaining(search);
+    }
+
 }
 
 
