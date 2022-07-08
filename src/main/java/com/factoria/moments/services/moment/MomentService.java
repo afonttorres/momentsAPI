@@ -79,7 +79,7 @@ public class MomentService implements IMomentService{
     @Override
     public MomentResDto delete(Long id, User auth) {
         Moment moment = momentsRepository.findById(id).get();
-        if(moment.getCreator().getId() != auth.getId()) return null;
+        if(!moment.getCreator().getId().equals(auth.getId())) return null;
         MomentResDto resMoment= this.castMomentToResMoment(moment);
         momentsRepository.delete(moment);
         return resMoment;
@@ -94,6 +94,16 @@ public class MomentService implements IMomentService{
             resSearchCollection.add(resMoment);
         });
         return resSearchCollection;
+    }
+
+    @Override
+    public List<MomentResDto> getUserMoments(Long id) {
+        List<Moment> userMoments = momentsRepository.findByUserId(id);
+        List <MomentResDto> userMomentsRes = new ArrayList<>();
+        userMoments.forEach(Moment ->{
+            userMomentsRes.add(this.castMomentToResMoment(Moment));
+        });
+        return userMomentsRes;
     }
 
     private Moment castReqMomentToMoment(Moment moment, MomentReqDto reqMoment, User auth){

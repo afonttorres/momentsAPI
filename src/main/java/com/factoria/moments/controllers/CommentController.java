@@ -31,5 +31,8 @@ public class CommentController {
         return commentService.create(newComment);
     }
 
-
+    @GetMapping("/moments/{id}/comments")
+    List<CommentResDto> getMomentComments(@PathVariable Long id){
+        return commentService.getByMoment(id);
+    }
 }

@@ -9,50 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 class MomentTest {
 
     @Test
-    void getTitle() {
-    }
-
-    @Test
-    void getImgUrl() {
-    }
-
-    @Test
-    void getDescription() {
-    }
-
-    @Test
-    void getId() {
-    }
-
-    @Test
-    void getUser() {
-    }
-
-    @Test
-    void getLocation() {
-    }
-
-    @Test
-    void getAvatarUrl() {
-    }
-
-    @Test
-    void isLiked() {
-    }
-
-    @Test
-    void getLikes() {
-    }
-
-    @Test
-    void getComments() {
-    }
-
-    @Test
-    void getSaves() {
+    void shouldHaveACommentsCounter(){
+        //GIVEN
+        var moment = new Moment();
+        var comment = new Comment();
+        //SYSTEM UNDER TEST
+        var sut = moment.commentsCount();
+        //THEN
+        assertThat(sut, equalTo(0));
+        //WHEN
     }
 
 }

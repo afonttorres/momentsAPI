@@ -22,4 +22,6 @@ public interface IMomentService {
     MomentResDto delete(Long id, User auth);
 
     List<MomentResDto> findByDescriptionOrImgUrlOrLocationContaining(String search);
+
+    List<MomentResDto> getUserMoments(Long id);
 }

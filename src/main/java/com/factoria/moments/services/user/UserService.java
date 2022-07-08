@@ -36,6 +36,10 @@ public class UserService implements IUserService{
 
     @Override
     public UserNoPassResDto create(UserPostReqDto userPostReqDto) {
+        User email = userRepository.findByEmail(userPostReqDto.getEmail());
+        if(email != null) return null;
+        User username = userRepository.findByUsername(userPostReqDto.getUsername());
+        if(username != null) return null;
         User user = this.castUserPostReqDtoToUser(userPostReqDto);
         userRepository.save(user);
         return this.castUserToUserNoPassResDto(user);
@@ -53,9 +57,7 @@ public class UserService implements IUserService{
     public UserNoPassResDto log(UserLogReqDto userLogReqDto) {
         User user = userRepository.findByEmail(userLogReqDto.getEmail());
         if(user == null) return null;
-        System.out.println(user.getPassword() == userLogReqDto.getPassword() );
-
-        if(user.getPassword() != userLogReqDto.getPassword()) return null;
+        if(!user.getPassword().equals(userLogReqDto.getPassword())) return null;
         System.out.println("ATTEMPTING TO LOG");
         return this.castUserToUserNoPassResDto(user);
     }

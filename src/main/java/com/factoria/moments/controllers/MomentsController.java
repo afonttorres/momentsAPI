@@ -66,9 +66,15 @@ public class MomentsController {
         return momentService.delete(id, auth);
     }
 
+//    moments?search=${search}
     @GetMapping(value="/moments", params="search")
     List<MomentResDto> getSearch(@RequestParam String search){
         return momentService.findByDescriptionOrImgUrlOrLocationContaining(search);
+    }
+
+    @GetMapping("/users/{id}/moments")
+    List<MomentResDto> getUserMoments(@PathVariable Long id){
+        return momentService.getUserMoments(id);
     }
 
 }

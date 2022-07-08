@@ -51,6 +51,25 @@ public class CommentService implements ICommentService{
         return this.castCommentToResComent(comment);
     }
 
+    @Override
+    public List<CommentResDto> getByMoment(Long id) {
+        /*Moment moment = momentsRepository.findById(id).get();
+        List <CommentResDto>  momentComments = new ArrayList<>();
+        if(moment.getCreator().getId() == null) return null;
+        commentRepository.findAll().forEach(Comment ->{
+          if(Comment.getMoment().getId() == id) {
+              momentComments.add(this.castCommentToResComent(Comment));
+          }
+        });
+        */
+        List<CommentResDto> momentComments = new ArrayList<>();
+        commentRepository.findByMomentId(id).forEach(Comment ->{
+           momentComments.add( this.castCommentToResComent(Comment));
+        });
+
+        return momentComments;
+    }
+
     private CommentResDto castCommentToResComent(Comment comment){
         CommentResDto resDto = new CommentResDto();
         resDto.setId(comment.getId());
