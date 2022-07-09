@@ -48,8 +48,8 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto update(MomentReqDto momentReqDto, Long id, User auth) {
-        if(momentReqDto.getUserId() != auth.getId()) return null;
         Moment moment = momentsRepository.findById(id).get();
+        if(!moment.getCreator().getId().equals(auth.getId())) return null;
         moment = this.castReqMomentToMoment(moment, momentReqDto, auth);
         momentsRepository.save(moment);
         MomentResDto momentRes = this.castMomentToResMoment(moment);
