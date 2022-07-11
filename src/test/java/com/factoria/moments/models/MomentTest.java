@@ -25,5 +25,4 @@ class MomentTest {
         assertThat(sut, equalTo(0));
         //WHEN
     }
-
 }

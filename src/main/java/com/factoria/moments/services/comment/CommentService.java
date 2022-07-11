@@ -9,7 +9,6 @@ import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.ICommentRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.repositories.IUserRepository;
-import com.factoria.moments.services.user.IUserService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,12 +21,11 @@ public class CommentService implements ICommentService{
     private IMomentsRepository momentsRepository;
     private IUserRepository userRepository;
 
-    public CommentService (ICommentRepository commentRepository, IMomentsRepository momentsRepository, IUserRepository userRepository){
+    public CommentService(ICommentRepository commentRepository, IMomentsRepository momentsRepository, IUserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.momentsRepository = momentsRepository;
         this.userRepository = userRepository;
     }
-
 
     @Override
     public List<CommentResDto> findAll() {
@@ -53,15 +51,6 @@ public class CommentService implements ICommentService{
 
     @Override
     public List<CommentResDto> getByMoment(Long id) {
-        /*Moment moment = momentsRepository.findById(id).get();
-        List <CommentResDto>  momentComments = new ArrayList<>();
-        if(moment.getCreator().getId() == null) return null;
-        commentRepository.findAll().forEach(Comment ->{
-          if(Comment.getMoment().getId() == id) {
-              momentComments.add(this.castCommentToResComent(Comment));
-          }
-        });
-        */
         List<CommentResDto> momentComments = new ArrayList<>();
         commentRepository.findByMomentId(id).forEach(Comment ->{
            momentComments.add( this.castCommentToResComent(Comment));

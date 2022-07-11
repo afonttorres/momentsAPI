@@ -20,8 +20,8 @@ public class Moment {
     private String location;
     private boolean isLiked = false;
     private boolean isSaved = false;
-    private int likes = 48;
-    private int saves = 2;
+    private int likes;
+    private int saves;
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;

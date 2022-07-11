@@ -17,4 +17,5 @@ public interface IMomentsRepository extends JpaRepository <Moment, Long> {
 
     @Query("select m from Moment m where m.creator.id = :id")
     List<Moment> findByUserId(@Param("id") Long id);
+
 }

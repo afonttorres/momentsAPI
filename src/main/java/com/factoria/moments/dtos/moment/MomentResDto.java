@@ -1,6 +1,7 @@
 package com.factoria.moments.dtos.moment;
 
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data

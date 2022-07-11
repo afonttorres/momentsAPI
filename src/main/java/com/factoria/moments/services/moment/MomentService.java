@@ -3,6 +3,7 @@ package com.factoria.moments.services.moment;
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
+import com.factoria.moments.mappers.MomentMapper;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IMomentsRepository;
@@ -24,7 +25,7 @@ public class MomentService implements IMomentService{
         List<Moment> moments = momentsRepository.findAll();
         List <MomentResDto> resMoments = new ArrayList<>();
         moments.forEach(Moment -> {
-            MomentResDto resMoment = this.castMomentToResMoment(Moment);
+            MomentResDto resMoment = new MomentMapper().mapToRes(Moment);
             resMoments.add(resMoment);
         });
         return resMoments;
@@ -33,16 +34,15 @@ public class MomentService implements IMomentService{
     @Override
     public MomentResDto findById(Long id) {
         Moment foundMoment = momentsRepository.findById(id).get();
-        MomentResDto resMoment = this.castMomentToResMoment(foundMoment);
+        MomentResDto resMoment = new MomentMapper().mapToRes(foundMoment);
         return resMoment;
     }
 
     @Override
     public MomentResDto create(MomentReqDto reqMoment, User auth) {
-        Moment moment = new Moment();
-        moment = this.castReqMomentToMoment(moment, reqMoment, auth);
+        var moment = new MomentMapper().mapReqToMoment(reqMoment, auth);
         momentsRepository.save(moment);
-        MomentResDto momentRes = this.castMomentToResMoment(moment);
+        MomentResDto momentRes =new MomentMapper().mapToRes(moment);
         return momentRes;
     }
 
@@ -50,9 +50,10 @@ public class MomentService implements IMomentService{
     public MomentResDto update(MomentReqDto momentReqDto, Long id, User auth) {
         Moment moment = momentsRepository.findById(id).get();
         if(!moment.getCreator().getId().equals(auth.getId())) return null;
-        moment = this.castReqMomentToMoment(moment, momentReqDto, auth);
-        momentsRepository.save(moment);
-        MomentResDto momentRes = this.castMomentToResMoment(moment);
+        Moment updatedMoment = new MomentMapper().mapReqToExistingMoment(momentReqDto, moment);
+        momentsRepository.save(updatedMoment);
+        MomentResDto momentRes = new MomentMapper().mapToRes(updatedMoment);
+
         return momentRes;
     }
 
@@ -62,7 +63,8 @@ public class MomentService implements IMomentService{
         if(moment.getCreator().getId() == auth.getId()) return null;
         moment.setLiked(!moment.isLiked());
         momentsRepository.save(moment);
-        MomentResDto momentRes = this.castMomentToResMoment(moment);
+        MomentResDto momentRes = new MomentMapper().mapToRes(moment);
+
         return momentRes;
     }
 
@@ -72,7 +74,7 @@ public class MomentService implements IMomentService{
         if(moment.getCreator().getId() == auth.getId()) return null;
         moment.setSaved(!moment.isSaved());
         momentsRepository.save(moment);
-        MomentResDto momentRes = this.castMomentToResMoment(moment);
+        MomentResDto momentRes =  new MomentMapper().mapToRes(moment);
         return momentRes;
     }
 
@@ -80,7 +82,8 @@ public class MomentService implements IMomentService{
     public MomentResDto delete(Long id, User auth) {
         Moment moment = momentsRepository.findById(id).get();
         if(!moment.getCreator().getId().equals(auth.getId())) return null;
-        MomentResDto resMoment= this.castMomentToResMoment(moment);
+        System.out.println("attempting to delete");
+        MomentResDto resMoment=  new MomentMapper().mapToRes(moment);
         momentsRepository.delete(moment);
         return resMoment;
     }
@@ -90,7 +93,7 @@ public class MomentService implements IMomentService{
         List<Moment> searchCollection = momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(search);
         List <MomentResDto> resSearchCollection = new ArrayList<>();
         searchCollection.forEach(Moment -> {
-            MomentResDto resMoment = this.castMomentToResMoment(Moment);
+            MomentResDto resMoment = new MomentMapper().mapToRes(Moment);
             resSearchCollection.add(resMoment);
         });
         return resSearchCollection;
@@ -101,41 +104,8 @@ public class MomentService implements IMomentService{
         List<Moment> userMoments = momentsRepository.findByUserId(id);
         List <MomentResDto> userMomentsRes = new ArrayList<>();
         userMoments.forEach(Moment ->{
-            userMomentsRes.add(this.castMomentToResMoment(Moment));
+            userMomentsRes.add( new MomentMapper().mapToRes(Moment));
         });
         return userMomentsRes;
-    }
-
-    private Moment castReqMomentToMoment(Moment moment, MomentReqDto reqMoment, User auth){
-        moment.setImgUrl(reqMoment.getImgUrl());
-        moment.setDescription(reqMoment.getDescription());
-        moment.setLocation(reqMoment.getLocation());
-        moment.setCreator(auth);
-        return moment;
-    }
-
-    private MomentResDto castMomentToResMoment(Moment moment){
-        MomentResDto resDto = new MomentResDto();
-        resDto.setDescription(moment.getDescription());
-        resDto.setLocation(moment.getLocation());
-        resDto.setImgUrl(moment.getImgUrl());
-        resDto.setLiked(moment.isLiked());
-        resDto.setLikes(moment.getLikes());
-        resDto.setSaved(moment.isSaved());
-        resDto.setSaves(moment.getSaves());
-        resDto.setCommentsCount(moment.commentsCount());
-        resDto.setId(moment.getId());
-        UserResDtoMoment creator = this.castUserToResUser(moment.getCreator());
-        resDto.setCreator(creator);
-        return resDto;
-    }
-
-    private UserResDtoMoment castUserToResUser(User user){
-        UserResDtoMoment resDto = new UserResDtoMoment();
-        resDto.setName(user.getName());
-        resDto.setUsername(user.getUsername());
-        resDto.setAvatarUrl(user.getAvatarUrl());
-        resDto.setId(user.getId());
-        return resDto;
     }
 }
