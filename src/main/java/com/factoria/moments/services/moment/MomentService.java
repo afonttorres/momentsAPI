@@ -53,7 +53,6 @@ public class MomentService implements IMomentService{
         Moment updatedMoment = new MomentMapper().mapReqToExistingMoment(momentReqDto, moment);
         momentsRepository.save(updatedMoment);
         MomentResDto momentRes = new MomentMapper().mapToRes(updatedMoment);
-
         return momentRes;
     }
 
@@ -82,7 +81,6 @@ public class MomentService implements IMomentService{
     public MomentResDto delete(Long id, User auth) {
         Moment moment = momentsRepository.findById(id).get();
         if(!moment.getCreator().getId().equals(auth.getId())) return null;
-        System.out.println("attempting to delete");
         MomentResDto resMoment=  new MomentMapper().mapToRes(moment);
         momentsRepository.delete(moment);
         return resMoment;

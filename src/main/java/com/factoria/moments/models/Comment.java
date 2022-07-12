@@ -14,7 +14,7 @@ public class Comment {
     @Column(name = "id", nullable = false)
     private Long id;
     private String comment;
-    private boolean isLiked;
+    private boolean isLiked = false;
     @ManyToOne
     @JoinColumn(name = "moment_id")
     private Moment moment;

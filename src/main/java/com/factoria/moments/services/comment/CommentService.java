@@ -3,6 +3,7 @@ package com.factoria.moments.services.comment;
 import com.factoria.moments.dtos.comment.CommentRequestDto;
 import com.factoria.moments.dtos.comment.CommentResDto;
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
+import com.factoria.moments.mappers.CommentMapper;
 import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
@@ -32,49 +33,26 @@ public class CommentService implements ICommentService{
         List<Comment> comments = commentRepository.findAll();
         List <CommentResDto>castedComments = new ArrayList<>();
         comments.forEach(Comment -> {
-            castedComments.add(castCommentToResComent(Comment));
+            castedComments.add(new CommentMapper().mapCommentToRes(Comment));
         });
         return castedComments;
-    }
-
-    @Override
-    public CommentResDto create(CommentRequestDto newComment) {
-        Comment comment = new Comment();
-        Moment moment = this.momentsRepository.findById(newComment.getMomentId()).get();
-        User user = this.userRepository.findById(newComment.getUserId()).get();
-        comment.setComment(newComment.getComment());
-        comment.setMoment(moment);
-        comment.setCreator(user);
-        this.commentRepository.save(comment);
-        return this.castCommentToResComent(comment);
     }
 
     @Override
     public List<CommentResDto> getByMoment(Long id) {
         List<CommentResDto> momentComments = new ArrayList<>();
         commentRepository.findByMomentId(id).forEach(Comment ->{
-           momentComments.add( this.castCommentToResComent(Comment));
+           momentComments.add( new CommentMapper().mapCommentToRes(Comment));
         });
-
         return momentComments;
     }
 
-    private CommentResDto castCommentToResComent(Comment comment){
-        CommentResDto resDto = new CommentResDto();
-        resDto.setId(comment.getId());
-        resDto.setMomentId(comment.getMoment().getId());
-        resDto.setComment(comment.getComment());
-        resDto.setLiked(comment.isLiked());
-        resDto.setCreator(this.castUserToResUser(comment.getCreator()));
-        return resDto;
-    }
-
-    private UserResDtoMoment castUserToResUser(User user){
-        UserResDtoMoment resDto = new UserResDtoMoment();
-        resDto.setName(user.getName());
-        resDto.setUsername(user.getUsername());
-        resDto.setAvatarUrl(user.getAvatarUrl());
-        resDto.setId(user.getId());
-        return resDto;
+    @Override
+    public CommentResDto create(CommentRequestDto newComment) {
+        Moment moment = this.momentsRepository.findById(newComment.getMomentId()).get();
+        User creator = this.userRepository.findById(newComment.getUserId()).get();
+        Comment comment = new CommentMapper().mapReqToComment(newComment, moment, creator);
+        this.commentRepository.save(comment);
+        return new CommentMapper().mapCommentToRes(comment);
     }
 }
