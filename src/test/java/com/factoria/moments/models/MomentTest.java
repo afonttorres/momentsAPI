@@ -72,4 +72,18 @@ class MomentTest {
         var sut = moment.isFaved(notLatinLover);
         assertThat(sut, equalTo(false));
     }
+
+    @Test
+    void loverCantLikeMomentIfAlreadyLiked(){
+        var moment = new Moment();
+        var latinLover = new User();
+        var like1 = new Like(latinLover, moment);
+        var like2= new Like(latinLover, moment);
+        moment.addLike(like1);
+        moment.addLike(like2);
+        var sut = moment.likesCount();
+        var liked = moment.isFaved(latinLover);
+        assertThat(sut, equalTo(0));
+        assertThat(liked, equalTo(false));
+    }
 }

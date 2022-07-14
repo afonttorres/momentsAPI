@@ -40,8 +40,14 @@ public class Moment {
     private List<Like> favs = new ArrayList<>();
 
     public void addLike(Like like){
+        System.out.println(favs.size());
         if(!like.getMoment().equals(this)) return;
-       favs.add(like);
+        var found = favs.stream().filter(Fav -> Fav.getLover() == like.getLover()).findAny();
+        if (found.isPresent()) {
+            favs.remove(found.get());
+            return;
+        }
+        favs.add(like);
     }
     public int likesCount() {
         return favs.size();
