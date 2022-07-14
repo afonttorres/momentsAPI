@@ -25,4 +25,51 @@ class MomentTest {
         assertThat(sut, equalTo(0));
         //WHEN
     }
+
+    @Test
+    void shouldHAveALikesCounter(){
+        var moment = new Moment();
+        var user = new User();
+        moment.setId(1L);
+        user.setId(1L);
+        var like = new Like(user, moment);
+        moment.addLike(like);
+        int sut = moment.likesCount();
+        assertThat(sut, equalTo(1));
+    }
+
+    @Test
+    void momentShouldntLetAddLikeIfMomentDoesNotMatch(){
+        var moment1 = new Moment();
+        var moment2 = new Moment();
+        var user = new User();
+        moment1.setId(1L);
+        moment2.setId(2L);
+        user.setId(1L);
+        var like = new Like(user, moment1);
+        moment2.addLike(like);
+        var sut = moment2.likesCount();
+        assertThat(sut, equalTo(0));
+    }
+
+    @Test
+    void momentShouldKnowIfUserLikesMoment(){
+        var moment = new Moment();
+        var latinLover = new User();
+        var like = new Like(latinLover, moment);
+        moment.addLike(like);
+        var sut = moment.isFaved(latinLover);
+        assertThat(sut, equalTo(true));
+    }
+
+    @Test
+    void loverShouldBeContainedInFavListToIsLikeToAppear(){
+        var moment = new Moment();
+        var latinLover = new User();
+        var notLatinLover = new User();
+        var like = new Like(latinLover, moment);
+        moment.addLike(like);
+        var sut = moment.isFaved(notLatinLover);
+        assertThat(sut, equalTo(false));
+    }
 }
