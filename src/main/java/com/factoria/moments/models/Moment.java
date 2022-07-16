@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -19,10 +18,6 @@ public class Moment {
     private String imgUrl;
     private String description;
     private String location;
-    private boolean isLiked = false;
-    private boolean isSaved = false;
-    private int likes;
-    private int saves;
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
@@ -37,25 +32,46 @@ public class Moment {
     }
 
     @OneToMany(mappedBy = "moment")
-    private List<Like> favs = new ArrayList<>();
+    private List<Like> likes = new ArrayList<>();
 
-    public void addLike(Like like){
-        System.out.println(favs.size());
+    public void toggleLike(Like like){
         if(!like.getMoment().equals(this)) return;
-        var found = favs.stream().filter(Fav -> Fav.getLover() == like.getLover()).findAny();
+        var found = likes.stream().filter(Fav -> Fav.getLiker() == like.getLiker()).findAny();
         if (found.isPresent()) {
-            favs.remove(found.get());
+            likes.remove(found);
             return;
         }
-        favs.add(like);
+        likes.add(like);
     }
     public int likesCount() {
-        return favs.size();
+        return likes.size();
+    }
+    public boolean isLiked(User user) {
+        var liker = likes.stream().filter(Fav -> Fav.getLiker().getId() == user.getId()).findAny();
+        if(liker.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
-    public boolean isFaved(User user) {
-        var favLover = favs.stream().filter(Fav -> Fav.getLover() == (user)).findFirst();
-        if(favLover.isEmpty()) return false;
+    @OneToMany(mappedBy = "moment")
+    private List<Save> saves = new ArrayList<>();
+    public void toggleSave(Save save){
+        if(!save.getMoment().equals(this)) return;
+        var found = saves.stream().filter(Save-> Save.getSaver() == save.getSaver()).findAny();
+        if(found.isPresent()){
+            saves.remove(found.get());
+            return;
+        }
+        saves.add(save);
+    }
+    public int savesCount(){return saves.size();}
+
+    public boolean isSaved(User user){
+        var saver = saves.stream().filter(Save->Save.getSaver() == user).findFirst();
+        if(saver.isEmpty()) {
+            return false;
+        }
         return true;
     }
 }

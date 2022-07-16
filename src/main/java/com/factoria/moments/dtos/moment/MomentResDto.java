@@ -11,8 +11,8 @@ public class MomentResDto {
     private String location;
     private boolean isLiked;
     private boolean isSaved;
-    private int likes;
-    private int saves;
+    private int likesCount;
+    private int savesCount;
     private UserResDtoMoment creator;
     private int commentsCount;
     private Long id;

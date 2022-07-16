@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins="http://localhost:3000/")
-public class MomentsController {
+@CrossOrigin(origins="*")
+public class MomentController {
 
     IMomentService momentService;
     IUserService userService;
 
-    public MomentsController(IMomentService momentService, IUserService userService){
+    public MomentController(IMomentService momentService, IUserService userService){
         this.momentService = momentService;
         this.userService = userService;
     }
@@ -27,13 +27,16 @@ public class MomentsController {
     }
 
     @GetMapping("/moments")
-    List<MomentResDto> getAll(){
-        return momentService.findAll();
+    List<MomentResDto> getAll(@RequestBody UserPetitionReqDto req){
+        System.out.println(req);
+        User auth = this.getAuth(req.getId());
+        return momentService.findAll(auth);
     }
 
     @GetMapping("/moments/{id}")
-    MomentResDto getById(@PathVariable Long id){
-        return momentService.findById(id);
+    MomentResDto getById(@PathVariable Long id, @RequestBody UserPetitionReqDto req){
+        User auth = this.getAuth(req.getId());
+        return momentService.findById(id, auth);
     }
 
     @PostMapping("/moments")
@@ -48,17 +51,17 @@ public class MomentsController {
         return momentService.update(momentReqDto,id, auth);
     }
 
-    @PatchMapping("/moments/{id}/like")
-    MomentResDto like(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
-        User auth = this.getAuth(userPetitionReqDto.getId());
-        return momentService.like(id, auth);
-    }
-
-    @PatchMapping("/moments/{id}/save")
-    MomentResDto save(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
-        User auth = this.getAuth(userPetitionReqDto.getId());
-        return momentService.save(id, auth);
-    }
+//    @PatchMapping("/moments/{id}/like")
+//    MomentResDto like(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
+//        User auth = this.getAuth(userPetitionReqDto.getId());
+//        return momentService.like(id, auth);
+//    }
+//
+//    @PatchMapping("/moments/{id}/save")
+//    MomentResDto save(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
+//        User auth = this.getAuth(userPetitionReqDto.getId());
+//        return momentService.save(id, auth);
+//    }
 
     @DeleteMapping("/moments/{id}")
     MomentResDto delete(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
@@ -68,13 +71,15 @@ public class MomentsController {
 
 //    moments?search=${search}
     @GetMapping(value="/moments", params="search")
-    List<MomentResDto> getSearch(@RequestParam String search){
-        return momentService.findByDescriptionOrImgUrlOrLocationContaining(search);
+    List<MomentResDto> getSearch(@RequestParam String search, @RequestBody UserPetitionReqDto req){
+        User auth = getAuth(req.getId());
+        return momentService.findByDescriptionOrImgUrlOrLocationContaining(search, auth);
     }
 
     @GetMapping("/users/{id}/moments")
-    List<MomentResDto> getUserMoments(@PathVariable Long id){
-        return momentService.getUserMoments(id);
+    List<MomentResDto> getUserMoments(@PathVariable Long id, @RequestBody UserPetitionReqDto req){
+        User auth = this.getAuth(req.getId());
+        return momentService.getUserMoments(id,auth);
     }
 
 }

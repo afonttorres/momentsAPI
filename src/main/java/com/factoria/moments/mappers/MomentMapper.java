@@ -2,7 +2,6 @@ package com.factoria.moments.mappers;
 
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
-import com.factoria.moments.dtos.user.response.UserResDtoMoment;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 
@@ -23,15 +22,15 @@ public class MomentMapper {
         return moment;
     }
 
-    public MomentResDto mapToRes(Moment moment){
+    public MomentResDto mapToRes(Moment moment, User auth){
         MomentResDto resMoment = new MomentResDto();
         resMoment.setDescription(moment.getDescription());
         resMoment.setLocation(moment.getLocation());
         resMoment.setImgUrl(moment.getImgUrl());
-        resMoment.setLiked(moment.isLiked());
-        resMoment.setLikes(moment.getLikes());
-        resMoment.setSaved(moment.isSaved());
-        resMoment.setSaves(moment.getSaves());
+        resMoment.setLikesCount(moment.likesCount());
+        resMoment.setSavesCount(moment.savesCount());
+        resMoment.setLiked(moment.isLiked(auth));
+        resMoment.setSaved(moment.isSaved(auth));
         resMoment.setCommentsCount(moment.commentsCount());
         resMoment.setId(moment.getId());
         resMoment.setCreator(new UserMapper().mapUserToResDtoMoment(moment.getCreator()));

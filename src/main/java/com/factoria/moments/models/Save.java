@@ -7,11 +7,12 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="likes")
+@Table(name="saves")
 @NoArgsConstructor
-public class Like {
-    public Like(User liker, Moment moment) {
-        this.liker = liker;
+public class Save {
+
+    public Save(User saver, Moment moment){
+        this.saver = saver;
         this.moment = moment;
     }
 
@@ -21,8 +22,8 @@ public class Like {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "lover_id")
-    private User liker;
+    @JoinColumn(name = "saver_id")
+    private User saver;
     @ManyToOne
     @JoinColumn(name = "moment_id")
     private Moment moment;

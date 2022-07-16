@@ -33,7 +33,8 @@ class MomentMapperTest {
     @Test
     void mapToRes(){
         var moment = createMoment();
-        var sut = new MomentMapper().mapToRes(moment);
+        var auth = new User();
+        var sut = new MomentMapper().mapToRes(moment, auth);
         assertEquals(sut.getImgUrl(), moment.getImgUrl());
         assertEquals(sut.getCreator().getAvatarUrl(), moment.getCreator().getAvatarUrl());
         assertEquals(sut.getCreator().getId(), moment.getCreator().getId());
