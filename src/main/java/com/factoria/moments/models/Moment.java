@@ -36,9 +36,9 @@ public class Moment {
 
     public void toggleLike(Like like){
         if(!like.getMoment().equals(this)) return;
-        var found = likes.stream().filter(Fav -> Fav.getLiker() == like.getLiker()).findAny();
+        var found = likes.stream().filter(Like -> Like.getLiker() == like.getLiker()).findAny();
         if (found.isPresent()) {
-            likes.remove(found);
+            likes.remove(found.get());
             return;
         }
         likes.add(like);
@@ -47,7 +47,7 @@ public class Moment {
         return likes.size();
     }
     public boolean isLiked(User user) {
-        var liker = likes.stream().filter(Fav -> Fav.getLiker().getId() == user.getId()).findAny();
+        var liker = likes.stream().filter(Fav -> Fav.getLiker() == user).findAny();
         if(liker.isEmpty()) {
             return false;
         }

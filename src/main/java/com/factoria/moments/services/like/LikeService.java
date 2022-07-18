@@ -3,6 +3,7 @@ package com.factoria.moments.services.like;
 import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.mappers.LikeMapper;
 import com.factoria.moments.models.Like;
+import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.ILikesRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.repositories.IUserRepository;
@@ -35,12 +36,12 @@ public class LikeService implements ILikeService{
     }
 
     @Override
-    public String toggleLike(LikeReqDto req) {
+    public String toggleLike(LikeReqDto req, User auth) {
         var moment = momentsRepository.findById(req.getMomentId());
-        var liker = userRepository.findById(req.getLikerId());
-        if(moment.isEmpty() || liker.isEmpty()) return "Incorrect request";
-        if(moment.get().getCreator() == liker.get()) return "Moment creator can't like its own moment";
-        Like like = new LikeMapper().mapReqToLike(liker.get(), moment.get());
+        var liker = auth;
+        if(moment.isEmpty() || liker == null) return "Incorrect request";
+        if(moment.get().getCreator() == liker) return "Moment creator can't like its own moment";
+        Like like = new LikeMapper().mapReqToLike(liker, moment.get());
         var found = this.checkIfLikeAlreadyExists(like);
         if(found.isPresent()){
             return this.dislike(found.get());
@@ -49,7 +50,7 @@ public class LikeService implements ILikeService{
     }
 
     private Optional<Like> checkIfLikeAlreadyExists(Like like){
-        List<Like> likes = likesRepository.findAll();
+        List<Like> likes = likesRepository.findByMomentId(like.getMoment().getId());
         System.out.println(likes.size());
         return likes.stream().filter(Like -> Like.getLiker() == like.getLiker()).findAny();
     }

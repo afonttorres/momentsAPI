@@ -31,10 +31,11 @@ class MomentServiceTest {
     void findAllShouldReturnAllMoments() {
         var momentService = new MomentService(momentsRepository);
         var user = new User();
+        user.setId(1L);
         var momentList = List.of(new Moment(), new Moment(), new Moment());
         momentList.forEach(Moment -> Moment.setCreator(user));
         Mockito.when(momentsRepository.findAll()).thenReturn(momentList);
-        var sut = momentService.findAll();
+        var sut = momentService.findAll(user);
         assertThat(sut.size(), equalTo(3));
     }
 
@@ -42,8 +43,10 @@ class MomentServiceTest {
     void findByIdShouldReturnMomentWithPamId() {
         var momentService = new MomentService(momentsRepository);
         var moment = this.createMoment();
+        var user = new User();
+        user.setId(1L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        var sut = momentService.findById(1L);
+        var sut = momentService.findById(1L, user);
         assertThat(sut.getDescription(),  equalTo(moment.getDescription()));
     }
 
@@ -120,64 +123,16 @@ class MomentServiceTest {
     }
 
     @Test
-    void likeShouldToggleMomentLiked() {
-        var momentService = new MomentService(momentsRepository);
-        Long id = 1L;
-        var user = new User();
-        user.setId(2L);
-        Moment moment = this.createMoment();
-        Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        Mockito.when(momentsRepository.save(any(Moment.class))).thenReturn(moment);
-        var sut = momentService.like(id, user);
-        assertThat(sut.isLiked(), equalTo(true));
-    }
-
-    @Test
-    void creatorCantLikeHisOwnMoment(){
-        var momentService = new MomentService(momentsRepository);
-        Long id = 1L;
-        var user = new User();
-        user.setId(2L);
-        Moment moment = this.createMoment();
-        Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        Mockito.when(momentsRepository.save(any(Moment.class))).thenReturn(moment);
-        var sut = momentService.like(id, moment.getCreator());
-        assertThat(sut, equalTo(null));
-    }
-
-    @Test
-    void saveShouldToggleMomentSaved() {
-        var momentService = new MomentService(momentsRepository);
-        Long id = 1L;
-        var user = new User();
-        user.setId(2L);
-        Moment moment = this.createMoment();
-        Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        Mockito.when(momentsRepository.save(any(Moment.class))).thenReturn(moment);
-        var sut = momentService.save(id, user);
-        assertThat(sut.isSaved(), equalTo(true));
-    }
-
-    @Test
-    void creatorCantSaveHisOwnMoment(){
-        var momentService = new MomentService(momentsRepository);
-        Long id = 1L;
-        Moment moment = this.createMoment();
-        Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        Mockito.when(momentsRepository.save(any(Moment.class))).thenReturn(moment);
-        var sut = momentService.save(id, moment.getCreator());
-        assertThat(sut, equalTo(null));
-    }
-
-    @Test
     void findByDescriptionOrImgUrlOrLocationContainingShouldReturnResMomentList() {
         var momentService = new MomentService(momentsRepository);
         Moment moment = this.createMoment();
-        MomentResDto res = new MomentMapper().mapToRes(moment);
+        var user = new User();
+        user.setId(1L);
+        MomentResDto res = new MomentMapper().mapToRes(moment, user);
         var filtered = List.of(moment);
         var foundMoments = List.of(res);
         Mockito.when(momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(any(String.class))).thenReturn(filtered);
-        var sut = momentService.findByDescriptionOrImgUrlOrLocationContaining("desc");
+        var sut = momentService.findByDescriptionOrImgUrlOrLocationContaining("desc", user);
         assertThat(sut, equalTo(foundMoments));
     }
 
@@ -185,11 +140,13 @@ class MomentServiceTest {
     void getUserMomentsShouldReturnResMomentList() {
         var momentService = new MomentService(momentsRepository);
         Moment moment = this.createMoment();
-        MomentResDto res = new MomentMapper().mapToRes(moment);
+        var user = new User();
+        user.setId(1L);
+        MomentResDto res = new MomentMapper().mapToRes(moment, user);
         var filtered = List.of(moment);
         var foundMoments = List.of(res);
         Mockito.when(momentsRepository.findByUserId(any(Long.class))).thenReturn(filtered);
-        var sut = momentService.getUserMoments(1L);
+        var sut = momentService.getUserMoments(1L, user);
         assertThat(sut, equalTo(foundMoments));
 
     }

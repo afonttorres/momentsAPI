@@ -6,6 +6,8 @@ import com.factoria.moments.dtos.user.request.UserPetitionReqDto;
 import com.factoria.moments.models.User;
 import com.factoria.moments.services.moment.IMomentService;
 import com.factoria.moments.services.user.IUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,61 +29,60 @@ public class MomentController {
     }
 
     @GetMapping("/moments")
-    List<MomentResDto> getAll(@RequestBody UserPetitionReqDto req){
-        System.out.println(req);
-        User auth = this.getAuth(req.getId());
+    List<MomentResDto> getAll(){
+        User auth = this.getAuth(1L);
         return momentService.findAll(auth);
     }
 
     @GetMapping("/moments/{id}")
-    MomentResDto getById(@PathVariable Long id, @RequestBody UserPetitionReqDto req){
-        User auth = this.getAuth(req.getId());
-        return momentService.findById(id, auth);
+    ResponseEntity<MomentResDto> getById(@PathVariable Long id){
+        User auth = this.getAuth(1L);
+        var moment = momentService.findById(id, auth);
+        return new ResponseEntity<>(moment, HttpStatus.OK);
     }
 
     @PostMapping("/moments")
     MomentResDto create(@RequestBody MomentReqDto momentReqDto){
-        User auth = this.getAuth(momentReqDto.getUserId());
+        User auth = this.getAuth(1L);
         return momentService.create(momentReqDto, auth);
     }
 
     @PutMapping("/moments/{id}")
     MomentResDto update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
-        User auth = this.getAuth(momentReqDto.getUserId());
+        User auth = this.getAuth(1L);
         return momentService.update(momentReqDto,id, auth);
     }
 
-//    @PatchMapping("/moments/{id}/like")
-//    MomentResDto like(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
-//        User auth = this.getAuth(userPetitionReqDto.getId());
-//        return momentService.like(id, auth);
-//    }
-//
-//    @PatchMapping("/moments/{id}/save")
-//    MomentResDto save(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
-//        User auth = this.getAuth(userPetitionReqDto.getId());
-//        return momentService.save(id, auth);
-//    }
-
     @DeleteMapping("/moments/{id}")
-    MomentResDto delete(@PathVariable Long id, @RequestBody UserPetitionReqDto userPetitionReqDto){
-        User auth = this.getAuth(userPetitionReqDto.getId());
+    MomentResDto delete(@PathVariable Long id){
+        User auth = this.getAuth(1L);
         return momentService.delete(id, auth);
     }
 
 //    moments?search=${search}
     @GetMapping(value="/moments", params="search")
-    List<MomentResDto> getSearch(@RequestParam String search, @RequestBody UserPetitionReqDto req){
-        User auth = getAuth(req.getId());
+    List<MomentResDto> getSearch(@RequestParam String search){
+        User auth = getAuth(1L);
         return momentService.findByDescriptionOrImgUrlOrLocationContaining(search, auth);
     }
 
     @GetMapping("/users/{id}/moments")
-    List<MomentResDto> getUserMoments(@PathVariable Long id, @RequestBody UserPetitionReqDto req){
-        User auth = this.getAuth(req.getId());
+    List<MomentResDto> getUserMoments(@PathVariable Long id){
+        User auth = this.getAuth(1L);
         return momentService.getUserMoments(id,auth);
     }
 
+    @GetMapping("/fav-moments")
+    List <MomentResDto> getUserFavMoments(){
+        User auth = this.getAuth(1L);
+        return momentService.getUserFavMoments(auth);
+    }
+
+    @GetMapping("/saved-moments")
+    List <MomentResDto> getUserSavedMoments(){
+        User auth = this.getAuth(1L);
+        return momentService.getUserSavedMoments(auth);
+    }
 }
 
 

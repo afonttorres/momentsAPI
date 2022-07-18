@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @PutMapping("/users/log")
-    UserNoPassResDto update(@RequestBody UserLogReqDto userLogReqDto){
+    UserNoPassResDto log(@RequestBody UserLogReqDto userLogReqDto){
         return userService.log(userLogReqDto);
     }
 }

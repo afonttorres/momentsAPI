@@ -2,7 +2,9 @@ package com.factoria.moments.controllers;
 
 import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.models.Like;
+import com.factoria.moments.models.User;
 import com.factoria.moments.services.like.ILikeService;
+import com.factoria.moments.services.user.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +14,17 @@ import java.util.List;
 public class LikeController {
 
     ILikeService likeService;
+    IUserService userService;
 
-    public LikeController(ILikeService likeService){
+    public LikeController(ILikeService likeService, IUserService userService){
         this.likeService = likeService;
+        this.userService = userService;
     }
+
+    private User getAuth(Long id){
+        return userService.findById(id);
+    }
+
 
     @GetMapping("/likes")
     List<Like> getAll(){
@@ -29,6 +38,7 @@ public class LikeController {
 
     @PostMapping("/likes")
     String like(@RequestBody LikeReqDto like){
-        return likeService.toggleLike(like);
+        User auth = this.getAuth(1L);
+        return likeService.toggleLike(like, auth);
     }
 }

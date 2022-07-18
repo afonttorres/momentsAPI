@@ -68,7 +68,7 @@ class CommentServiceTest {
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(creator));
         Mockito.when(commentRepository.save(any(Comment.class))).thenReturn(comment);
-        var sut = commentService.create(req);
+        var sut = commentService.create(req, creator);
         assertThat(sut.getMomentId(), equalTo(res.getMomentId()));
         assertThat(sut.getCreator().getId(), equalTo(res.getCreator().getId()));
         assertThat(sut, equalTo(res));

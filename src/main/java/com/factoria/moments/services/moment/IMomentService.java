@@ -25,4 +25,8 @@ public interface IMomentService {
     List<MomentResDto> findByDescriptionOrImgUrlOrLocationContaining(String search, User auth);
 
     List<MomentResDto> getUserMoments(Long id, User auth);
+
+    List<MomentResDto> getUserFavMoments(User auth);
+
+    List<MomentResDto> getUserSavedMoments(User auth);
 }

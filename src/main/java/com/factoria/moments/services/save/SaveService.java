@@ -3,6 +3,7 @@ package com.factoria.moments.services.save;
 import com.factoria.moments.dtos.saves.SaveReqDto;
 import com.factoria.moments.mappers.SaveMapper;
 import com.factoria.moments.models.Save;
+import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.repositories.ISavesRepository;
 import com.factoria.moments.repositories.IUserRepository;
@@ -34,12 +35,12 @@ public class SaveService implements ISaveService{
     }
 
     @Override
-    public String toggleSave(SaveReqDto req) {
+    public String toggleSave(SaveReqDto req, User auth) {
         var moment = momentsRepository.findById(req.getMomentId());
-        var saver = userRepository.findById(req.getSaverId());
-        if(moment.isEmpty() || saver.isEmpty()) return "Incorrect request";
-        if(moment.get().getCreator() == saver.get()) return "Moment creator can't like its own moment";
-        Save save = new SaveMapper().mapReqToSave(saver.get(), moment.get());
+        var saver = auth;
+        if(moment.isEmpty() || saver == null) return "Incorrect request";
+        if(moment.get().getCreator() == saver) return "Moment creator can't like its own moment";
+        Save save = new SaveMapper().mapReqToSave(saver, moment.get());
         var found = this.checkIfLikeAlreadyExists(save);
         if(found.isPresent()){
             return this.unsave(found.get());
@@ -48,7 +49,7 @@ public class SaveService implements ISaveService{
     }
 
     private Optional<Save> checkIfLikeAlreadyExists(Save save){
-        List<Save> saves = savesRepository.findAll();
+        List<Save> saves = savesRepository.findByMomentId(save.getMoment().getId());
         return saves.stream().filter(Like -> Like.getSaver() == save.getSaver()).findAny();
     }
 

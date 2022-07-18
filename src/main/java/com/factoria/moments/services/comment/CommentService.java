@@ -48,9 +48,9 @@ public class CommentService implements ICommentService{
     }
 
     @Override
-    public CommentResDto create(CommentRequestDto newComment) {
+    public CommentResDto create(CommentRequestDto newComment, User auth) {
         Moment moment = this.momentsRepository.findById(newComment.getMomentId()).get();
-        User creator = this.userRepository.findById(newComment.getUserId()).get();
+        User creator = auth;
         Comment comment = new CommentMapper().mapReqToComment(newComment, moment, creator);
         this.commentRepository.save(comment);
         return new CommentMapper().mapCommentToRes(comment);

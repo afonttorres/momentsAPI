@@ -20,7 +20,7 @@ class MomentTest {
         var moment = new Moment();
         var user = new User();
         moment.setId(1L);
-        user.setId(1L);
+        user.setId(2L);
         var like = new Like(user, moment);
         moment.toggleLike(like);
         int sut = moment.likesCount();
@@ -66,6 +66,7 @@ class MomentTest {
     void loverCantLikeMomentIfAlreadyLiked(){
         var moment = new Moment();
         var latinLover = new User();
+        latinLover.setId(1L);
         var like1 = new Like(latinLover, moment);
         var like2= new Like(latinLover, moment);
         moment.toggleLike(like1);

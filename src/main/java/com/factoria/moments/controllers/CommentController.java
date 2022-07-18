@@ -4,9 +4,11 @@ import com.factoria.moments.dtos.comment.CommentRequestDto;
 import com.factoria.moments.dtos.comment.CommentResDto;
 import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
+import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.ICommentRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.services.comment.ICommentService;
+import com.factoria.moments.services.user.IUserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,10 +18,17 @@ import java.util.List;
 public class CommentController {
 
    ICommentService commentService;
+   IUserService userService;
 
-    public CommentController (ICommentService commentService){
+    public CommentController (ICommentService commentService , IUserService userService){
         this.commentService = commentService;
+        this.userService = userService;
     }
+
+    private User getAuth(Long id){
+        return userService.findById(id);
+    }
+
 
     @GetMapping("/comments")
     List<CommentResDto> getAll(){
@@ -28,7 +37,8 @@ public class CommentController {
 
     @PostMapping("/comments")
     CommentResDto createComment(@RequestBody CommentRequestDto newComment){
-        return commentService.create(newComment);
+        User auth = this.getAuth(1L);
+        return commentService.create(newComment, auth);
     }
 
     @GetMapping("/moments/{id}/comments")
