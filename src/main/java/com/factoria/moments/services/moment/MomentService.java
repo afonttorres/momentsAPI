@@ -2,6 +2,7 @@ package com.factoria.moments.services.moment;
 
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
+import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.MomentMapper;
 import com.factoria.moments.models.Like;
@@ -55,9 +56,10 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto update(MomentReqDto momentReqDto, Long id, User auth) {
-        Moment moment = momentsRepository.findById(id).get();
-        if(!moment.getCreator().getId().equals(auth.getId())) return null;
-        Moment updatedMoment = new MomentMapper().mapReqToExistingMoment(momentReqDto, moment);
+        var moment = momentsRepository.findById(id);
+        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
+        if(!moment.get().getCreator().getId().equals(auth.getId())) throw new BadRequestException("Incorrect User", "M-001");
+        Moment updatedMoment = new MomentMapper().mapReqToExistingMoment(momentReqDto, moment.get());
         momentsRepository.save(updatedMoment);
         MomentResDto momentRes = new MomentMapper().mapToRes(updatedMoment, auth);
         return momentRes;
@@ -65,10 +67,11 @@ public class MomentService implements IMomentService{
 
     @Override
     public MomentResDto delete(Long id, User auth) {
-        Moment moment = momentsRepository.findById(id).get();
-        if(!moment.getCreator().getId().equals(auth.getId())) return null;
-        MomentResDto resMoment=  new MomentMapper().mapToRes(moment, auth);
-        momentsRepository.delete(moment);
+        var moment = momentsRepository.findById(id);
+        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
+        if(!moment.get().getCreator().getId().equals(auth.getId())) throw new BadRequestException("Incorrect User", "M-001");
+        MomentResDto resMoment=  new MomentMapper().mapToRes(moment.get(), auth);
+        momentsRepository.delete(moment.get());
         return resMoment;
     }
 

@@ -48,15 +48,17 @@ public class MomentController {
     }
 
     @PutMapping("/moments/{id}")
-    MomentResDto update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
+    ResponseEntity<MomentResDto> update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
         User auth = this.getAuth(1L);
-        return momentService.update(momentReqDto,id, auth);
+        var moment = momentService.update(momentReqDto,id, auth);
+        return new ResponseEntity<>(moment, HttpStatus.OK);
     }
 
     @DeleteMapping("/moments/{id}")
-    MomentResDto delete(@PathVariable Long id){
+    ResponseEntity<MomentResDto> delete(@PathVariable Long id){
         User auth = this.getAuth(1L);
-        return momentService.delete(id, auth);
+        var moment = momentService.delete(id, auth);
+        return new ResponseEntity<>(moment, HttpStatus.OK);
     }
 
 //    moments?search=${search}
