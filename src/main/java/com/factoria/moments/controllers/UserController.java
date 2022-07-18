@@ -5,6 +5,8 @@ import com.factoria.moments.dtos.user.request.UserUpdateReqDto;
 import com.factoria.moments.dtos.user.response.UserNoPassResDto;
 import com.factoria.moments.dtos.user.request.UserPostReqDto;
 import com.factoria.moments.services.user.IUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,22 +26,26 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    UserNoPassResDto getById(@PathVariable Long id){
-        return userService.getById(id);
+    ResponseEntity<UserNoPassResDto> getById(@PathVariable Long id){
+        var user = userService.getById(id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    UserNoPassResDto create(@RequestBody UserPostReqDto userPostReqDto){
-        return userService.create(userPostReqDto);
+    ResponseEntity<UserNoPassResDto> create(@RequestBody UserPostReqDto userPostReqDto){
+        var user =  userService.create(userPostReqDto);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping("/users/{id}")
-    UserNoPassResDto update(@RequestBody UserUpdateReqDto userUpdateReqDto, @PathVariable Long id){
-        return userService.update(userUpdateReqDto, id);
+    ResponseEntity<UserNoPassResDto> update(@RequestBody UserUpdateReqDto userUpdateReqDto, @PathVariable Long id){
+        var user = userService.update(userUpdateReqDto, id);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping("/users/log")
-    UserNoPassResDto log(@RequestBody UserLogReqDto userLogReqDto){
-        return userService.log(userLogReqDto);
+    ResponseEntity<UserNoPassResDto> log(@RequestBody UserLogReqDto userLogReqDto){
+        var user = userService.log(userLogReqDto);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }
