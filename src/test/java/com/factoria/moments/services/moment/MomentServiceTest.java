@@ -101,7 +101,7 @@ class MomentServiceTest {
     }
 
     @Test
-    void userCantUpdateMomentIfNotHis(){
+    void userCantUpdateMomentIfNotHisAndThrowsException(){
         var momentService = new MomentService(momentsRepository);
         var req = new MomentReqDto("img1", "desc1", "loc1", 1L);
         Long id = 1L;
@@ -110,8 +110,12 @@ class MomentServiceTest {
         user.setId(2L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Mockito.when(momentsRepository.save(any(Moment.class))).thenReturn(moment);
-        var sut = momentService.update(req, id, user);
-        assertThat(sut, equalTo(null));
+        Exception exception = assertThrows(BadRequestException.class, ()->{
+           momentService.update(req, id, user);
+        });
+        var res = "Incorrect User";
+        var sut = exception.getMessage();
+        assertTrue(sut.equals(res));
     }
 
     @Test
@@ -154,20 +158,9 @@ class MomentServiceTest {
         assertThat(sut.getDescription(), equalTo(moment.getDescription()));
     }
 
-    @Test
-    void userCantDeleteMomentIfNotHis() {
-        Long deletedId = 1L;
-        var momentService = new MomentService(momentsRepository);
-        Moment moment = this.createMoment();
-        var user = new User();
-        user.setId(2L);
-        Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        var sut = momentService.delete(deletedId, user);
-        assertThat(sut, equalTo(null));
-    }
 
     @Test
-    void deleteThrowsNotFoundException(){
+    void deleteThrowsNotFoundExceptionWhenMomentNotFound(){
         var momentService = new MomentService(momentsRepository);
         Exception ex = assertThrows(NotFoundException.class, ()->{
            momentService.delete(1L, new User());
@@ -178,7 +171,7 @@ class MomentServiceTest {
     }
 
     @Test
-    void deleteThrowsBadRequest(){
+    void deleteThrowsBadRequestWhenIncorrectUser(){
         var momentService = new MomentService(momentsRepository);
         var moment = createMoment();
         Mockito.when(momentsRepository.findById(1L)).thenReturn(Optional.ofNullable(moment));

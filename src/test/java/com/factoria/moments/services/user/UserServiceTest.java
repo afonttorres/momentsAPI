@@ -3,6 +3,8 @@ package com.factoria.moments.services.user;
 import com.factoria.moments.dtos.user.request.UserLogReqDto;
 import com.factoria.moments.dtos.user.request.UserPostReqDto;
 import com.factoria.moments.dtos.user.request.UserUpdateReqDto;
+import com.factoria.moments.exceptions.BadRequestException;
+import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.UserMapper;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IUserRepository;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -31,7 +34,6 @@ class UserServiceTest {
     void findAllShouldReturnAllUsers() {
         UserService userService = new UserService(userRepository);
         List<User> users = this.createUsers();
-        System.out.println(users);
         Mockito.when(userRepository.findAll()).thenReturn(users);
         var sut = userService.findAll();
         assertThat(sut.size(), equalTo(users.size()));
@@ -60,6 +62,19 @@ class UserServiceTest {
     }
 
     @Test
+    void getByIdThrowsNotFoundException(){
+        var userService = new UserService(userRepository);
+        //Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        Exception ex = assertThrows(NotFoundException.class, ()-> {
+            userService.findById(1L);
+        });
+        var res = "User Not Found";
+        var sut = ex.getMessage();
+        assertTrue(sut.equals(res));
+        //<java.util.NoSuchElementException>
+    }
+
+    @Test
     void createShouldPostAUser() {
         Long id = 1L;
         UserService userService = new UserService(userRepository);
@@ -71,19 +86,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createShouldntLetCreateUserIfEmailIsAlreadyInUse(){
-        Long id = 1L;
-        UserService userService = new UserService(userRepository);
-        User user = this.createUser(id);
-        UserPostReqDto req = new UserPostReqDto("email1", "username1", "password1", "name1");
-        Mockito.when(userRepository.findByEmail(any(String.class))).thenReturn(user);
-        Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
-        var sut = userService.create(req);
-        assertThat(sut, equalTo(null)); //create returns null if email exists already
-    }
-
-    @Test
-    void createShouldntLetCreateUserIfUsernameIsAlreadyInUse(){
+    void createShouldntLetCreateUserIfEmailIsAlreadyInUseThrowBadRequestException(){
         Long id = 1L;
         UserService userService = new UserService(userRepository);
         User user = this.createUser(id);
@@ -91,8 +94,29 @@ class UserServiceTest {
         Mockito.when(userRepository.findByEmail(any(String.class))).thenReturn(user);
         Mockito.when(userRepository.findByUsername(any(String.class))).thenReturn(user);
         Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
-        var sut = userService.create(req);
-        assertThat(sut, equalTo(null)); //create returns null if username exists already
+        Exception ex = assertThrows(BadRequestException.class, ()->{
+            userService.create(req);
+        });
+        var res = "Email already in use";
+        var sut = ex.getMessage();
+        assertThat(sut, equalTo(res));
+    }
+
+    @Test
+    void createShouldntLetCreateUserIfUsernameIsAlreadyInUseThrowBadRequestException(){
+        Long id = 1L;
+        UserService userService = new UserService(userRepository);
+        User user = this.createUser(id);
+        UserPostReqDto req = new UserPostReqDto("email1", "username1", "password1", "name1");
+        Mockito.when(userRepository.findByEmail(any(String.class))).thenReturn(null);
+        Mockito.when(userRepository.findByUsername(any(String.class))).thenReturn(user);
+        Mockito.when(userRepository.save(any(User.class))).thenReturn(user);
+        Exception ex = assertThrows(BadRequestException.class, ()->{
+            userService.create(req);
+        });
+        var res = "Username already in use";
+        var sut = ex.getMessage();
+        assertThat(sut, equalTo(res));
     }
 
     @Test
@@ -114,9 +138,13 @@ class UserServiceTest {
         Long id = 1L;
         UserService userService = new UserService(userRepository);
         UserUpdateReqDto req = this.createPutReq(id);
-        User user = this.createUser(id);
-        /*var sut = userService.update(req, id);
-        assertThat(sut.getEmail(), equalTo(null));*/
+        var user = this.createPutReq(1L);
+        Exception ex = assertThrows(NotFoundException.class, ()->{
+           userService.update(user, id);
+        });
+        var res = "User Not Found";
+        var sut = ex.getMessage();
+        assertTrue(sut.equals(res));
     }
 
     @Test
@@ -132,24 +160,31 @@ class UserServiceTest {
     }
 
     @Test
-    void logShouldntLetUserLogIfEmailDoesNotExist(){
+    void logShouldntLetUserLogIfEmailDoesNotExistThrowsException(){
         Long id = 1L;
         UserService userService = new UserService(userRepository);
         UserLogReqDto req = new UserLogReqDto("email1", "password1");
-        var sut = userService.log(req);
-        assertThat(sut, equalTo(null)); //if log doesnt find user by his email returns null
+        Exception ex = assertThrows(NotFoundException.class, ()->{
+           userService.log(req);
+        });
+        var res = "User Not Found";
+        var sut = ex.getMessage();
+        assertTrue(sut.equals(res));
     }
 
     @Test
-    void logShouldntLetUserLogIfPassNotEqualToUserPass(){
+    void logShouldntLetUserLogIfPassNotEqualToUserPassThrowsError(){
         Long id = 1L;
         UserService userService = new UserService(userRepository);
+        User user = this.createUser(id);
         UserLogReqDto req = new UserLogReqDto("email1", "password2");
-        User user = this.createUser(id); //password1
         Mockito.when(userRepository.findByEmail(any(String.class))).thenReturn(user);
-        var sut = userService.log(req);
-        assertThat(sut, equalTo(null)); //if req pass != user pass log returns null
-//        assertThat(sut, equalTo(null)); //fails when change req pass to password1
+        Exception ex = assertThrows(BadRequestException.class, ()->{
+            userService.log(req);
+        });
+        var res = "Incorrect Password";
+        var sut = ex.getMessage();
+        assertTrue(sut.equals(res));
     }
 
 

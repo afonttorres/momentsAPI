@@ -26,6 +26,7 @@ public class SaveService implements ISaveService{
         this.momentsRepository = momentsRepository;
         this.userRepository = userRepository;
     }
+
     @Override
     public List<Save> getAll() {
         return savesRepository.findAll();
