@@ -12,5 +12,5 @@ public interface ISaveService {
     List<Save> getMomentSaves(Long id);
 
 
-    String toggleSave(SaveReqDto save, User auth);
+    boolean toggleSave(SaveReqDto save, User auth);
 }

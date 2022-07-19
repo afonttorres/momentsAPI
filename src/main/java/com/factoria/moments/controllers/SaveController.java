@@ -8,6 +8,8 @@ import com.factoria.moments.models.User;
 import com.factoria.moments.services.like.ILikeService;
 import com.factoria.moments.services.save.ISaveService;
 import com.factoria.moments.services.user.IUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +41,9 @@ public class SaveController {
     }
 
     @PostMapping("/saves")
-    String save(@RequestBody SaveReqDto save){
+    ResponseEntity<Boolean> save(@RequestBody SaveReqDto save){
         User auth = this.getAuth(1L);
-        return saveService.toggleSave(save, auth);
+        var isSaved = saveService.toggleSave(save, auth);
+        return new ResponseEntity<>(isSaved, HttpStatus.OK);
     }
 }

@@ -1,6 +1,8 @@
 package com.factoria.moments.services.like;
 
 import com.factoria.moments.dtos.likes.LikeReqDto;
+import com.factoria.moments.exceptions.BadRequestException;
+import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.LikeMapper;
 import com.factoria.moments.models.Like;
 import com.factoria.moments.models.User;
@@ -36,11 +38,12 @@ public class LikeService implements ILikeService{
     }
 
     @Override
-    public String toggleLike(LikeReqDto req, User auth) {
+    public boolean toggleLike(LikeReqDto req, User auth) {
         var moment = momentsRepository.findById(req.getMomentId());
         var liker = auth;
-        if(moment.isEmpty() || liker == null) return "Incorrect request";
-        if(moment.get().getCreator() == liker) return "Moment creator can't like its own moment";
+        if(moment.isEmpty() || liker == null) throw new NotFoundException("Moment Not Found", "M-404");
+        if(liker == null) throw new NotFoundException("User Not Found", "U-404");
+        if(moment.get().getCreator() == liker) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;
         Like like = new LikeMapper().mapReqToLike(liker, moment.get());
         var found = this.checkIfLikeAlreadyExists(like);
         if(found.isPresent()){
@@ -55,14 +58,16 @@ public class LikeService implements ILikeService{
         return likes.stream().filter(Like -> Like.getLiker() == like.getLiker()).findAny();
     }
 
-    private String dislike(Like like){
+    private boolean dislike(Like like){
         likesRepository.delete(like);
-        return  "User "+like.getLiker().getName()+" disliked moment with id: "+like.getMoment().getId()+".";
+        //return  "User "+like.getLiker().getName()+" disliked moment with id: "+like.getMoment().getId()+".";
+        return false;
     }
 
-    private String like(Like like){
+    private boolean like(Like like){
         likesRepository.save(like);
-        return "User "+like.getLiker().getName()+" liked moment with id: "+like.getMoment().getId()+".";
+        //return "User "+like.getLiker().getName()+" liked moment with id: "+like.getMoment().getId()+".";
+        return true;
     }
 
 

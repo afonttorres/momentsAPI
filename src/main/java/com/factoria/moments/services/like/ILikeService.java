@@ -10,7 +10,7 @@ public interface ILikeService {
     List<Like> getAll();
     List<Like> getMomentLikes(Long id);
 
-    String toggleLike(LikeReqDto like, User auth);
+    boolean toggleLike(LikeReqDto like, User auth);
 
 
 }
