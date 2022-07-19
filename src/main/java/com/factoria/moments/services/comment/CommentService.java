@@ -3,6 +3,7 @@ package com.factoria.moments.services.comment;
 import com.factoria.moments.dtos.comment.CommentRequestDto;
 import com.factoria.moments.dtos.comment.CommentResDto;
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
+import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.CommentMapper;
 import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
@@ -49,9 +50,10 @@ public class CommentService implements ICommentService{
 
     @Override
     public CommentResDto create(CommentRequestDto newComment, User auth) {
-        Moment moment = this.momentsRepository.findById(newComment.getMomentId()).get();
+        var moment = this.momentsRepository.findById(newComment.getMomentId());
+        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
         User creator = auth;
-        Comment comment = new CommentMapper().mapReqToComment(newComment, moment, creator);
+        Comment comment = new CommentMapper().mapReqToComment(newComment, moment.get(), creator);
         this.commentRepository.save(comment);
         return new CommentMapper().mapCommentToRes(comment);
     }

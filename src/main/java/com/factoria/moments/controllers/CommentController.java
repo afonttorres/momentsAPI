@@ -9,6 +9,8 @@ import com.factoria.moments.repositories.ICommentRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.services.comment.ICommentService;
 import com.factoria.moments.services.user.IUserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,9 +38,10 @@ public class CommentController {
     }
 
     @PostMapping("/comments")
-    CommentResDto createComment(@RequestBody CommentRequestDto newComment){
+    ResponseEntity<CommentResDto> createComment(@RequestBody CommentRequestDto newComment){
         User auth = this.getAuth(1L);
-        return commentService.create(newComment, auth);
+        var comment = commentService.create(newComment, auth);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     @GetMapping("/moments/{id}/comments")

@@ -2,6 +2,7 @@ package com.factoria.moments.services.comment;
 
 import com.factoria.moments.dtos.comment.CommentRequestDto;
 import com.factoria.moments.dtos.comment.CommentResDto;
+import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.CommentMapper;
 import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
@@ -63,8 +64,6 @@ class CommentServiceTest {
         User creator = this.createUser();
         Comment comment = new CommentMapper().mapReqToComment(req, moment, creator);
         CommentResDto res = new CommentMapper().mapCommentToRes(comment);
-        System.out.println(momentsRepository);
-        System.out.println(userRepository);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.of(creator));
         Mockito.when(commentRepository.save(any(Comment.class))).thenReturn(comment);
@@ -72,6 +71,20 @@ class CommentServiceTest {
         assertThat(sut.getMomentId(), equalTo(res.getMomentId()));
         assertThat(sut.getCreator().getId(), equalTo(res.getCreator().getId()));
         assertThat(sut, equalTo(res));
+    }
+
+    @Test
+    void createThrowsNotFoundException(){
+        var commentService = new CommentService(commentRepository, momentsRepository, userRepository);
+        CommentRequestDto req = new CommentRequestDto("comment", 1L, 2L);
+        Moment moment = this.createMoment();
+        User creator = this.createUser();
+        Exception ex = assertThrows(NotFoundException.class, ()->{
+            commentService.create(req, creator);
+        });
+        var res = "Moment Not Found";
+        var sut = ex.getMessage();
+        assertTrue(sut.equals(res));
     }
 
 
