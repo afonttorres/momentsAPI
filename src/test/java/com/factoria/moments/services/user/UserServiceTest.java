@@ -58,20 +58,18 @@ class UserServiceTest {
         Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(user));
         var sut = userService.getById(id);
         assertThat(sut.getUsername(), equalTo(user.getUsername()));
-//        assertThat(sut.getUsername(), equalTo("patata"));
     }
 
     @Test
     void getByIdThrowsNotFoundException(){
         var userService = new UserService(userRepository);
-        //Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findById(any(Long.class))).thenReturn(Optional.empty());
         Exception ex = assertThrows(NotFoundException.class, ()-> {
-            userService.findById(1L);
+            userService.getById(1L);
         });
         var res = "User Not Found";
         var sut = ex.getMessage();
         assertTrue(sut.equals(res));
-        //<java.util.NoSuchElementException>
     }
 
     @Test
@@ -130,7 +128,6 @@ class UserServiceTest {
         var sut = userService.update(req, id);
         assertThat(sut.getUsername(), equalTo(req.getUsername()));
         assertThat(sut.getDescription(), equalTo(req.getDescription()));
-//        assertThat(sut.getUsername(), equalTo("patata"));
     }
 
     @Test
@@ -156,7 +153,6 @@ class UserServiceTest {
         Mockito.when(userRepository.findByEmail(any(String.class))).thenReturn(user);
         var sut = userService.log(req);
         assertThat(sut.getEmail(), equalTo(req.getEmail()));
-//        assertThat(sut.getEmail(), equalTo("patata"));
     }
 
     @Test
@@ -186,10 +182,6 @@ class UserServiceTest {
         var sut = ex.getMessage();
         assertTrue(sut.equals(res));
     }
-
-
-
-
 
     public List<User> createUsers(){
         List<User> users = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class Moment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     @OneToMany(mappedBy = "moment")
     private List<Comment> comments = new ArrayList<>();
     @JsonSerialize
@@ -31,6 +33,7 @@ public class Moment {
         return this.comments.size();
     }
 
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     @OneToMany(mappedBy = "moment")
     private List<Like> likes = new ArrayList<>();
 
@@ -54,6 +57,7 @@ public class Moment {
         return true;
     }
 
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     @OneToMany(mappedBy = "moment")
     private List<Save> saves = new ArrayList<>();
     public void toggleSave(Save save){

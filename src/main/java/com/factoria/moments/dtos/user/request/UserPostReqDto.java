@@ -10,5 +10,4 @@ public class UserPostReqDto {
     private String username;
     private String password;
     private String name;
-
 }
