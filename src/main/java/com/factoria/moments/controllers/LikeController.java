@@ -1,6 +1,6 @@
 package com.factoria.moments.controllers;
 
-import com.factoria.moments.dtos.likes.LikeReqDto;
+import com.factoria.moments.dtos.likes.LikeDto;
 import com.factoria.moments.models.Like;
 import com.factoria.moments.models.User;
 import com.factoria.moments.services.like.ILikeService;
@@ -29,17 +29,19 @@ public class LikeController {
 
 
     @GetMapping("/likes")
-    List<Like> getAll(){
-        return likeService.getAll();
+    ResponseEntity<List<LikeDto>> getAll(){
+        var likes = likeService.getAll();
+        return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
     @GetMapping("/moments/{id}/likes")
-    List<Like> getMomentLikes(@PathVariable Long id){
-        return likeService.getMomentLikes(id);
+    ResponseEntity<List<LikeDto>> getMomentLikes(@PathVariable Long id){
+        var likes = likeService.getMomentLikes(id);
+        return new ResponseEntity<>(likes, HttpStatus.OK) ;
     }
 
     @PostMapping("/likes")
-    ResponseEntity<Boolean> like(@RequestBody LikeReqDto like){
+    ResponseEntity<Boolean> like(@RequestBody LikeDto like){
         User auth = this.getAuth(1L);
         var isLiked = likeService.toggleLike(like, auth);
         return new ResponseEntity<>(isLiked, HttpStatus.OK);

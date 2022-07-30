@@ -1,6 +1,6 @@
 package com.factoria.moments.services.like;
 
-import com.factoria.moments.dtos.likes.LikeReqDto;
+import com.factoria.moments.dtos.likes.LikeDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.LikeMapper;
@@ -28,17 +28,17 @@ public class LikeService implements ILikeService{
     }
 
     @Override
-    public List<Like> getAll() {
-        return likesRepository.findAll();
+    public List<LikeDto> getAll() {
+        return new LikeMapper().mapMultipleLikesToLikeDto(likesRepository.findAll());
     }
 
     @Override
-    public List<Like> getMomentLikes(Long id) {
-        return likesRepository.findByMomentId(id);
+    public List<LikeDto> getMomentLikes(Long id) {
+        return new LikeMapper().mapMultipleLikesToLikeDto(likesRepository.findByMomentId(id));
     }
 
     @Override
-    public boolean toggleLike(LikeReqDto req, User auth) {
+    public boolean toggleLike(LikeDto req, User auth) {
         var moment = momentsRepository.findById(req.getMomentId());
         var liker = auth;
         if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");

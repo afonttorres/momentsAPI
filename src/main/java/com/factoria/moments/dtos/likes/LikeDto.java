@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class LikeReqDto {
+public class LikeDto {
+    Long id;
     Long momentId;
     Long likerId;
 }
