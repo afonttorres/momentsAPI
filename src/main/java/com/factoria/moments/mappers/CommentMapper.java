@@ -7,6 +7,9 @@ import com.factoria.moments.models.Comment;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommentMapper {
     public CommentResDto mapCommentToRes(Comment comment){
         CommentResDto resDto = new CommentResDto();
@@ -24,5 +27,11 @@ public class CommentMapper {
         comment.setMoment(moment);
         comment.setCreator(creator);
         return comment;
+    }
+
+    public List<CommentResDto> mapMultipleCommentsToRes(List<Comment> comments){
+        List<CommentResDto> res = new ArrayList<>();
+        comments.forEach(Comment -> res.add(this.mapCommentToRes(Comment)));
+        return res;
     }
 }

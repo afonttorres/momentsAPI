@@ -29,13 +29,7 @@ public class MomentService implements IMomentService{
     }
     @Override
     public List<MomentResDto> findAll(User auth) {
-        List<Moment> moments = momentsRepository.findAll();
-        List <MomentResDto> resMoments = new ArrayList<>();
-        moments.forEach(Moment -> {
-            MomentResDto resMoment = new MomentMapper().mapToRes(Moment, auth);
-            resMoments.add(resMoment);
-        });
-        return resMoments;
+        return new MomentMapper().mapMultipleMomentsToRes( momentsRepository.findAll(), auth);
     }
 
     @Override
@@ -77,42 +71,21 @@ public class MomentService implements IMomentService{
 
     @Override
     public List<MomentResDto> findByDescriptionOrImgUrlOrLocationContaining(String search, User auth) {
-        List<Moment> searchCollection = momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(search);
-        List <MomentResDto> resSearchCollection = new ArrayList<>();
-        searchCollection.forEach(Moment -> {
-            MomentResDto resMoment = new MomentMapper().mapToRes(Moment, auth);
-            resSearchCollection.add(resMoment);
-        });
-        return resSearchCollection;
+        return  new MomentMapper().mapMultipleMomentsToRes(momentsRepository.findByDescriptionOrImgUrlOrLocationContaining(search), auth);
     }
 
     @Override
     public List<MomentResDto> getUserMoments(Long id, User auth) {
-        List<Moment> userMoments = momentsRepository.findByUserId(id);
-        List <MomentResDto> userMomentsRes = new ArrayList<>();
-        userMoments.forEach(Moment ->{
-            userMomentsRes.add( new MomentMapper().mapToRes(Moment, auth));
-        });
-        return userMomentsRes;
+        return new MomentMapper().mapMultipleMomentsToRes(momentsRepository.findByUserId(id), auth);
     }
 
     @Override
     public List<MomentResDto> getUserFavMoments(User auth) {
-        List<Moment> favMoments = momentsRepository.findFavs(auth.getId());
-        List<MomentResDto> favMomentsRes = new ArrayList<>();
-        favMoments.forEach(Moment -> {
-            favMomentsRes.add(new MomentMapper().mapToRes(Moment, auth));
-        });
-        return favMomentsRes;
+        return new MomentMapper().mapMultipleMomentsToRes(momentsRepository.findFavs(auth.getId()), auth);
     }
 
     @Override
     public List<MomentResDto> getUserSavedMoments(User auth) {
-        List<Moment> savedMoments = momentsRepository.findSaves(auth.getId());
-        List<MomentResDto> savedMomentsRes = new ArrayList<>();
-        savedMoments.forEach(Moment -> {
-            savedMomentsRes.add(new MomentMapper().mapToRes(Moment, auth));
-        });
-        return savedMomentsRes;
+        return new MomentMapper().mapMultipleMomentsToRes(momentsRepository.findSaves(auth.getId()),auth);
     }
 }

@@ -30,12 +30,7 @@ public class UserService implements IUserService{
 
     @Override
     public List<UserNoPassResDto> findAll() {
-        List<User> users = userRepository.findAll();
-        List<UserNoPassResDto> castedUsers = new ArrayList<>();
-        users.forEach(User -> {
-            castedUsers.add(new UserMapper().mapUserToNoPassResDto(User));
-        });
-        return castedUsers;
+        return new UserMapper().mapMultipleUsersToNoPassResDto( userRepository.findAll());
     }
 
     @Override

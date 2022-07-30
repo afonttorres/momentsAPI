@@ -31,21 +31,12 @@ public class CommentService implements ICommentService{
 
     @Override
     public List<CommentResDto> findAll() {
-        List<Comment> comments = commentRepository.findAll();
-        List <CommentResDto>castedComments = new ArrayList<>();
-        comments.forEach(Comment -> {
-            castedComments.add(new CommentMapper().mapCommentToRes(Comment));
-        });
-        return castedComments;
+        return new CommentMapper().mapMultipleCommentsToRes( commentRepository.findAll());
     }
 
     @Override
     public List<CommentResDto> getByMoment(Long id) {
-        List<CommentResDto> momentComments = new ArrayList<>();
-        commentRepository.findByMomentId(id).forEach(Comment ->{
-           momentComments.add( new CommentMapper().mapCommentToRes(Comment));
-        });
-        return momentComments;
+        return new CommentMapper().mapMultipleCommentsToRes(commentRepository.findByMomentId(id));
     }
 
     @Override

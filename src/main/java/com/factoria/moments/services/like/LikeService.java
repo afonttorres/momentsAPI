@@ -54,7 +54,6 @@ public class LikeService implements ILikeService{
 
     private Optional<Like> checkIfLikeAlreadyExists(Like like){
         List<Like> likes = likesRepository.findByMomentId(like.getMoment().getId());
-        System.out.println(likes.size());
         return likes.stream().filter(Like -> Like.getLiker() == like.getLiker()).findAny();
     }
 

@@ -5,6 +5,9 @@ import com.factoria.moments.dtos.moment.MomentResDto;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MomentMapper {
     public Moment mapReqToMoment(MomentReqDto reqMoment, User creator){
         Moment moment = new Moment();
@@ -35,5 +38,11 @@ public class MomentMapper {
         resMoment.setId(moment.getId());
         resMoment.setCreator(new UserMapper().mapUserToResDtoMoment(moment.getCreator()));
         return  resMoment;
+    }
+
+    public List<MomentResDto> mapMultipleMomentsToRes(List<Moment> moments, User auth){
+        List<MomentResDto> res = new ArrayList<>();
+        moments.forEach(Moment -> res.add(this.mapToRes(Moment, auth)));
+        return res;
     }
 }

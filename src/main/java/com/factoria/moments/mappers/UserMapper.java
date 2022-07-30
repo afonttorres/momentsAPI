@@ -7,6 +7,9 @@ import com.factoria.moments.dtos.user.response.UserNoPassResDto;
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
 import com.factoria.moments.models.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserMapper {
 
     //RES
@@ -53,5 +56,11 @@ public class UserMapper {
         user.setFollowing(req.getFollowing());
         user.setDescription(req.getDescription());
         return user;
+    }
+
+    public List<UserNoPassResDto> mapMultipleUsersToNoPassResDto(List<User> users){
+        List<UserNoPassResDto> res = new ArrayList<>();
+        users.forEach(User -> res.add(this.mapUserToNoPassResDto(User)));
+        return res;
     }
 }

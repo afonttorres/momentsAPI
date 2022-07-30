@@ -1,5 +1,6 @@
 package com.factoria.moments.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,8 +24,10 @@ public class Save {
 
     @ManyToOne
     @JoinColumn(name = "saver_id")
+    @JsonIgnore
     private User saver;
     @ManyToOne
     @JoinColumn(name = "moment_id")
+    @JsonIgnore
     private Moment moment;
 }
