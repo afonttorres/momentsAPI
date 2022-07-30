@@ -1,6 +1,7 @@
 package com.factoria.moments.services.save;
 
 import com.factoria.moments.dtos.saves.SaveReqDto;
+import com.factoria.moments.dtos.saves.SaveResDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.SaveMapper;
@@ -28,13 +29,13 @@ public class SaveService implements ISaveService{
     }
 
     @Override
-    public List<Save> getAll() {
-        return savesRepository.findAll();
+    public List<SaveResDto> getAll() {
+        return new SaveMapper().mapMultipleSavesToRes(savesRepository.findAll());
     }
 
     @Override
-    public List<Save> getMomentSaves(Long id) {
-        return savesRepository.findByMomentId(id);
+    public List<SaveResDto> getMomentSaves(Long id) {
+        return new SaveMapper().mapMultipleSavesToRes(savesRepository.findByMomentId(id));
     }
 
     @Override

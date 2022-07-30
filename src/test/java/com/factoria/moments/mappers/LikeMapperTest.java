@@ -1,6 +1,6 @@
 package com.factoria.moments.mappers;
 
-import com.factoria.moments.dtos.likes.LikeDto;
+import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.models.Like;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
@@ -13,7 +13,7 @@ class LikeMapperTest {
     @Test
     void mapReqToLikeShouldMapAReqToALike() {
         var like = new Like();
-        var req = LikeDto.builder()
+        var req = LikeReqDto.builder()
                 .likerId(1L)
                 .momentId(1L)
                 .build();

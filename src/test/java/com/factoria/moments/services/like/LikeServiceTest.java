@@ -1,6 +1,6 @@
 package com.factoria.moments.services.like;
 
-import com.factoria.moments.dtos.likes.LikeDto;
+import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.models.Like;
@@ -59,7 +59,7 @@ class LikeServiceTest {
         var moment = this.createMoment();
         var liker = new User();
         liker.setId(2L);
-        var req = new LikeDto(1L, 2L);
+        var req = new LikeReqDto(1L, 2L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         var sut = likeService.toggleLike(req, liker);
         assertThat(sut, equalTo(true));
@@ -71,7 +71,7 @@ class LikeServiceTest {
         var moment = this.createMoment();
         var liker = new User();
         liker.setId(2L);
-        var req = new LikeDto(1L, 2L);
+        var req = new LikeReqDto(1L, 2L);
         var likes =  List.of(new Like(liker, moment));
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Mockito.when(likesRepository.findByMomentId(any(Long.class))).thenReturn(likes);
@@ -85,7 +85,7 @@ class LikeServiceTest {
         var likeService = new LikeService(likesRepository, momentsRepository, userRepository);
         var liker = new User();
         liker.setId(2L);
-        var req = new LikeDto(2L, 2L);
+        var req = new LikeReqDto(2L, 2L);
         Exception ex = assertThrows(NotFoundException.class, ()->{
             likeService.toggleLike(req, liker);
         });
@@ -98,7 +98,7 @@ class LikeServiceTest {
     void toggleLikeShouldReturnNotFoundExceptionIfUserDoesNotExist(){
         var likeService = new LikeService(likesRepository, momentsRepository, userRepository);
         var moment = this.createMoment();
-        var req = new LikeDto(1L, 2L);
+        var req = new LikeReqDto(1L, 2L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Exception ex = assertThrows(NotFoundException.class, ()->{
             likeService.toggleLike(req, null);
@@ -113,7 +113,7 @@ class LikeServiceTest {
         var likeService = new LikeService(likesRepository, momentsRepository, userRepository);
         var moment = this.createMoment();
         var liker = moment.getCreator();
-        var req = new LikeDto(1L, 1L);
+        var req = new LikeReqDto(1L, 1L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
         Exception ex = assertThrows(BadRequestException.class, ()->{
             likeService.toggleLike(req, liker);

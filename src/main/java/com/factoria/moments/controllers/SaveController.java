@@ -1,6 +1,7 @@
 package com.factoria.moments.controllers;
 
 import com.factoria.moments.dtos.saves.SaveReqDto;
+import com.factoria.moments.dtos.saves.SaveResDto;
 import com.factoria.moments.models.Save;
 import com.factoria.moments.models.User;
 import com.factoria.moments.services.save.ISaveService;
@@ -28,13 +29,15 @@ public class SaveController {
 
 
     @GetMapping("/saves")
-    List<Save> getAll(){
-        return saveService.getAll();
+    ResponseEntity<List<SaveResDto>> getAll(){
+        var saves = saveService.getAll();
+        return new ResponseEntity<>(saves, HttpStatus.OK);
     }
 
     @GetMapping("/moments/{id}/saves")
-    List<Save> getMomentLikes(@PathVariable Long id){
-        return saveService.getMomentSaves(id);
+    ResponseEntity<List<SaveResDto>> getMomentLikes(@PathVariable Long id){
+        var saves = saveService.getMomentSaves(id);
+        return new ResponseEntity<>(saves, HttpStatus.OK);
     }
 
     @PostMapping("/saves")
