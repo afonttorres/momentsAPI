@@ -2,12 +2,12 @@ package com.factoria.moments.controllers;
 
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
-import com.factoria.moments.dtos.user.request.UserPetitionReqDto;
 import com.factoria.moments.models.User;
 import com.factoria.moments.services.moment.IMomentService;
 import com.factoria.moments.services.user.IUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,10 +28,11 @@ public class MomentController {
         return userService.findById(id);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/moments")
-    List<MomentResDto> getAll(){
+    ResponseEntity<List<MomentResDto>> getAll(){
         User auth = this.getAuth(1L);
-        return momentService.findAll(auth);
+        return new ResponseEntity<>(momentService.findAll(auth), HttpStatus.OK);
     }
 
     @GetMapping("/moments/{id}")

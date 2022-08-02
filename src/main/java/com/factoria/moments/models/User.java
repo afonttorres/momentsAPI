@@ -1,12 +1,17 @@
 package com.factoria.moments.models;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
-@Data
 @Entity
 @Table(name="users")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,9 +22,19 @@ public class User {
     private String avatarUrl;
     private String email;
     private String name;
-    private String password;
     private String bannerUrl;
     private long followers;
     private long following;
     private String description;
+    @JsonIgnore
+    private String password;
+
+    @ManyToMany
+    private Set<Role> roles;
+
+    public User(String username, String email, String encode){
+        this.username = username;
+        this.email = email;
+        this.password = encode;
+    }
 }
