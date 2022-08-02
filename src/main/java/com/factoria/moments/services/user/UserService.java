@@ -9,11 +9,11 @@ import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.UserMapper;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IUserRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements IUserService{
@@ -30,11 +30,17 @@ public class UserService implements IUserService{
 
     @Override
     public List<UserNoPassResDto> findAll() {
-        return new UserMapper().mapMultipleUsersToNoPassResDto( userRepository.findAll());
+        var users = this.userRepository.findAll();
+        if(users.size() <= 1) users = new ArrayList<>();
+        if(users.size() > 1){
+          users = users.stream().filter(User -> !User.getUsername().equals("admin")).collect(Collectors.toList());
+        }
+        return new UserMapper().mapMultipleUsersToNoPassResDto( users);
     }
 
     @Override
     public UserNoPassResDto getById(Long id) {
+        if(id == 1) throw new BadRequestException("Wrong input", "U-001");
         var user = userRepository.findById(id);
         if(user.isEmpty()) throw new NotFoundException("User Not Found", "U-404");
         return new UserMapper().mapUserToNoPassResDto(user.get());
