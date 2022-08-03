@@ -1,9 +1,7 @@
 package com.factoria.moments.controllers;
 
-import com.factoria.moments.auth.facade.IAuthenticationFacade;
 import com.factoria.moments.dtos.saves.SaveReqDto;
 import com.factoria.moments.dtos.saves.SaveResDto;
-import com.factoria.moments.models.User;
 import com.factoria.moments.services.save.ISaveService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +14,10 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class SaveController {
     ISaveService saveService;
-    IAuthenticationFacade authenticationFacade;
 
-    public SaveController(ISaveService saveService, IAuthenticationFacade authenticationFacade){
+    public SaveController(ISaveService saveService){
         this.saveService = saveService;
-        this.authenticationFacade = authenticationFacade;
     }
-
-    private User getAuth(){
-        return authenticationFacade.getAuthUser();
-    }
-
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/saves")
@@ -45,8 +36,7 @@ public class SaveController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/saves")
     ResponseEntity<Boolean> save(@RequestBody SaveReqDto save){
-        User auth = this.getAuth();
-        var isSaved = saveService.toggleSave(save, auth);
+        var isSaved = saveService.toggleSave(save);
         return new ResponseEntity<>(isSaved, HttpStatus.OK);
     }
 }

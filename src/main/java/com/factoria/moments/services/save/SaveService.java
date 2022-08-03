@@ -1,5 +1,6 @@
 package com.factoria.moments.services.save;
 
+import com.factoria.moments.auth.facade.IAuthenticationFacade;
 import com.factoria.moments.dtos.saves.SaveReqDto;
 import com.factoria.moments.dtos.saves.SaveResDto;
 import com.factoria.moments.exceptions.BadRequestException;
@@ -7,9 +8,8 @@ import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.SaveMapper;
 import com.factoria.moments.models.Save;
 import com.factoria.moments.models.User;
-import com.factoria.moments.repositories.IMomentsRepository;
 import com.factoria.moments.repositories.ISavesRepository;
-import com.factoria.moments.repositories.IUserRepository;
+import com.factoria.moments.services.moment.IMomentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +19,14 @@ import java.util.Optional;
 public class SaveService implements ISaveService{
 
     ISavesRepository savesRepository;
-    IMomentsRepository momentsRepository;
-    IUserRepository userRepository;
+    IMomentService momentService;
 
-    public SaveService(ISavesRepository savesRepository, IMomentsRepository momentsRepository, IUserRepository userRepository){
+    IAuthenticationFacade authenticationFacade;
+
+    public SaveService(ISavesRepository savesRepository, IMomentService momentService, IAuthenticationFacade authenticationFacade){
         this.savesRepository = savesRepository;
-        this.momentsRepository = momentsRepository;
-        this.userRepository = userRepository;
+        this.momentService = momentService;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -39,13 +40,12 @@ public class SaveService implements ISaveService{
     }
 
     @Override
-    public boolean toggleSave(SaveReqDto req, User auth) {
-        var moment = momentsRepository.findById(req.getMomentId());
-        var saver = auth;
-        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
+    public boolean toggleSave(SaveReqDto req) {
+        var moment = momentService.momentValidation(req.getMomentId());
+        var saver = authenticationFacade.getAuthUser();
         if(saver == null) throw new NotFoundException("User Not Found", "U-404");
-        if(moment.get().getCreator() == saver) throw new BadRequestException("Moment creator can't save its own moment", "M-005");
-        Save save = new SaveMapper().mapReqToSave(saver, moment.get());
+        if(moment.getCreator() == saver) throw new BadRequestException("Moment creator can't save its own moment", "M-005");
+        Save save = new SaveMapper().mapReqToSave(saver, moment);
         var found = this.checkIfLikeAlreadyExists(save);
         if(found.isPresent()){
             return this.unsave(found.get());
