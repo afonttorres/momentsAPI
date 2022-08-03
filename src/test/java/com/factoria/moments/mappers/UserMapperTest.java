@@ -1,6 +1,5 @@
 package com.factoria.moments.mappers;
 
-import com.factoria.moments.dtos.user.request.UserPostReqDto;
 import com.factoria.moments.dtos.user.request.UserUpdateReqDto;
 import com.factoria.moments.models.User;
 import org.junit.jupiter.api.Test;

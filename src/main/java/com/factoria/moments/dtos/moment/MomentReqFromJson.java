@@ -7,8 +7,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 @Builder
-public class MomentReqDto {
+public class MomentReqFromJson {
     private String description;
     private String location;
     private String imgUrl;
+    private String username;
+
+    public MomentReqFromJson(){
+
+    }
 }

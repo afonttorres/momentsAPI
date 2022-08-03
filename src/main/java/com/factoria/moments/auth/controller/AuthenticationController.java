@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthenticationController {
 
     private final IAuthRepository authRepository;
@@ -49,7 +50,6 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<?>  authenticateUser(@RequestBody LoginRequest loginReq){
-        authRepository.findAll().forEach(Auth -> System.out.println(Auth.getUsername()));
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
 
@@ -78,19 +78,20 @@ public class AuthenticationController {
         if(authRepository.existsByUsername(singUpReq.getUsername())){
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username already taken!"));
+                    .body(new MessageResponse("Username already taken!"));
         }
 
         if(authRepository.existsByEmail(singUpReq.getEmail())){
             return  ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email already in use!"));
+                    .body(new MessageResponse("Email already in use!"));
         }
 
         User user = new User(
                 singUpReq.getUsername(),
                 singUpReq.getEmail(),
-                encoder.encode(singUpReq.getPassword())
+                encoder.encode(singUpReq.getPassword()),
+                singUpReq.getName()
         );
 
         Set<String> strRoles = singUpReq.getRole();
@@ -99,7 +100,7 @@ public class AuthenticationController {
 
         if(strRoles == null){
             Role userRole = roleRepository.findByName(Role.RoleName.ROLE_USER)
-                    .orElseThrow(()-> new RuntimeException("Error: Role is not found."));
+                    .orElseThrow(()-> new RuntimeException("Role is not found."));
 
             roles.add(userRole);
         }else{
@@ -107,12 +108,12 @@ public class AuthenticationController {
                 switch (role){
                     case "admin" :{
                         Role adminRole = roleRepository.findByName(Role.RoleName.ROLE_ADMIN)
-                                .orElseThrow(()-> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(()-> new RuntimeException("Role is not found."));
                         roles.add(adminRole);
                     }
                     default:{
                         Role userRole = roleRepository.findByName(Role.RoleName.ROLE_USER)
-                                .orElseThrow(()-> new RuntimeException("Error: Role is not found."));
+                                .orElseThrow(()-> new RuntimeException("Role is not found."));
                         roles.add(userRole);
                     }
                 }

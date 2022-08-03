@@ -1,11 +1,8 @@
 package com.factoria.moments.services.user;
 
-import com.factoria.moments.dtos.user.request.UserLogReqDto;
-import com.factoria.moments.dtos.user.request.UserPostReqDto;
 import com.factoria.moments.dtos.user.request.UserUpdateReqDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
-import com.factoria.moments.mappers.UserMapper;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IUserRepository;
 import org.junit.jupiter.api.Test;
@@ -18,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

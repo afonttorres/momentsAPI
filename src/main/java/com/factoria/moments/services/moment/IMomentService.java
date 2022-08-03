@@ -2,11 +2,14 @@ package com.factoria.moments.services.moment;
 
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
+import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 
 import java.util.List;
 
 public interface IMomentService {
+
+    Moment momentValidation(Long id);
     List<MomentResDto> findAll(User auth);
 
     MomentResDto findById(Long id, User auth);

@@ -9,5 +9,4 @@ import lombok.Data;
 @Builder
 public class SaveReqDto {
     Long momentId;
-    Long saverId;
 }

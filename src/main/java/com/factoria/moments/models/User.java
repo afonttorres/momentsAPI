@@ -31,9 +31,10 @@ public class User {
     @ManyToMany
     private Set<Role> roles;
 
-    public User(String username, String email, String encode){
+    public User(String username, String email, String encode, String name){
         this.username = username;
         this.email = email;
         this.password = encode;
+        this.name = name;
     }
 }

@@ -5,17 +5,11 @@ import com.factoria.moments.dtos.moment.MomentResDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.MomentMapper;
-import com.factoria.moments.models.Like;
 import com.factoria.moments.models.Moment;
-import com.factoria.moments.models.Save;
 import com.factoria.moments.models.User;
-import com.factoria.moments.repositories.ICommentRepository;
 import com.factoria.moments.repositories.IMomentsRepository;
-import com.factoria.moments.services.like.ILikeService;
-import com.factoria.moments.services.save.ISaveService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,6 +21,13 @@ public class MomentService implements IMomentService{
     public MomentService(IMomentsRepository momentsRepository){
         this.momentsRepository = momentsRepository;
     }
+
+    public Moment momentValidation(Long id){
+        var moment = momentsRepository.findById(id);
+        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
+        return moment.get();
+    }
+
     @Override
     public List<MomentResDto> findAll(User auth) {
         return new MomentMapper().mapMultipleMomentsToRes( momentsRepository.findAll(), auth);

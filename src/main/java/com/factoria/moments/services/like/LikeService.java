@@ -1,15 +1,14 @@
 package com.factoria.moments.services.like;
 
+import com.factoria.moments.auth.facade.IAuthenticationFacade;
 import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.dtos.likes.LikeResDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.LikeMapper;
 import com.factoria.moments.models.Like;
-import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.ILikesRepository;
-import com.factoria.moments.repositories.IMomentsRepository;
-import com.factoria.moments.repositories.IUserRepository;
+import com.factoria.moments.services.moment.IMomentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,13 +18,13 @@ import java.util.Optional;
 public class LikeService implements ILikeService{
 
     ILikesRepository likesRepository;
-    IMomentsRepository momentsRepository;
-    IUserRepository userRepository;
+    IMomentService momentService;
+    IAuthenticationFacade authenticationFacade;
 
-    public LikeService(ILikesRepository likesRepository, IMomentsRepository momentsRepository, IUserRepository userRepository){
+    public LikeService(ILikesRepository likesRepository, IMomentService momentService, IAuthenticationFacade authenticationFacade){
         this.likesRepository = likesRepository;
-        this.momentsRepository = momentsRepository;
-        this.userRepository = userRepository;
+        this.momentService = momentService;
+        this.authenticationFacade = authenticationFacade;
     }
 
     @Override
@@ -39,13 +38,12 @@ public class LikeService implements ILikeService{
     }
 
     @Override
-    public boolean toggleLike(LikeReqDto req, User auth) {
-        var moment = momentsRepository.findById(req.getMomentId());
-        var liker = auth;
-        if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
+    public boolean toggleLike(LikeReqDto req) {
+        var moment = momentService.momentValidation(req.getMomentId());
+        var liker =authenticationFacade.getAuthUser();
         if(liker == null) throw new NotFoundException("User Not Found", "U-404");
-        if(moment.get().getCreator() == liker) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;
-        Like like = new LikeMapper().mapReqToLike(liker, moment.get());
+        if(moment.getCreator() == liker) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;
+        Like like = new LikeMapper().mapReqToLike(liker, moment);
         var found = this.checkIfLikeAlreadyExists(like);
         if(found.isPresent()){
             return this.dislike(found.get());

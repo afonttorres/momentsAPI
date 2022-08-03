@@ -2,7 +2,7 @@ package com.factoria.moments.fakers;
 
 //import aj.org.objectweb.asm.TypeReference;
 
-import com.factoria.moments.dtos.moment.MomentReqDto;
+import com.factoria.moments.dtos.moment.MomentReqFromJson;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.Role;
 import com.factoria.moments.models.User;
@@ -75,25 +75,23 @@ public class FakerDataSeed {
         authRepository.saveAll(List.of(agnes, nil));
     }
 
-    public Moment createMoment(String loc, String desc, String img, Long id){
+    public Moment createMoment(String loc, String desc, String img, String username){
         var moment = new Moment();
         moment.setLocation(loc);
         moment.setDescription(desc);
         moment.setImgUrl(img);
-        if(id.equals(2))moment.setCreator(authRepository.findByUsername("afonttorres").get());
-        if(!id.equals(2))moment.setCreator(authRepository.findById(id).get());
+        moment.setCreator(authRepository.findByUsername(username).get());
         return moment;
     }
 
     public void createMultipleMoments(){
         List<Moment> moments = new ArrayList<>();
         ObjectMapper mapper = new ObjectMapper();
-        TypeReference<List<MomentReqDto>> typeReference = new TypeReference<List<MomentReqDto>>(){};
-        InputStream inputStream = TypeReference.class.getResourceAsStream("/data.json");
-        System.out.println(inputStream);
+        TypeReference<List<MomentReqFromJson>> typeReference = new TypeReference<List<MomentReqFromJson>>(){};
+        InputStream inputStream = TypeReference.class.getResourceAsStream("/moments.json");
         try{
-            List<MomentReqDto> momentsReq = mapper.readValue(inputStream, typeReference);
-            momentsReq.forEach(req -> moments.add(this.createMoment(req.getLocation(), req.getDescription(), req.getImgUrl(), req.getUserId())));
+            List<MomentReqFromJson> momentsReq = mapper.readValue(inputStream, typeReference);
+            momentsReq.forEach(req -> moments.add(this.createMoment(req.getLocation(), req.getDescription(), req.getImgUrl(), req.getUsername())));
             momentsRepository.saveAll(moments);
             System.out.println("Moments saved!");
         }catch (IOException e){

@@ -1,7 +1,5 @@
 package com.factoria.moments.mappers;
 
-import com.factoria.moments.dtos.user.request.UserLogReqDto;
-import com.factoria.moments.dtos.user.request.UserPostReqDto;
 import com.factoria.moments.dtos.user.request.UserUpdateReqDto;
 import com.factoria.moments.dtos.user.response.UserNoPassResDto;
 import com.factoria.moments.dtos.user.response.UserResDtoMoment;
@@ -37,15 +35,6 @@ public class UserMapper {
     }
 
     //REQ
-    public User mapPostReqToUser(UserPostReqDto req){
-        User user = new User();
-        user.setEmail(req.getEmail());
-        user.setName(req.getName());
-        user.setUsername(req.getUsername());
-        user.setPassword(req.getPassword());
-        return user;
-    }
-
     public User mapPutReqToUser(UserUpdateReqDto req, User user){
         user.setUsername(req.getUsername());
         user.setAvatarUrl(req.getAvatarUrl());

@@ -25,17 +25,22 @@ public class MomentController {
     }
 
 
+    private User getAuth(){
+        return authenticationFacade.getAuthUser();
+    }
+
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/moments")
     ResponseEntity<List<MomentResDto>> getAll(){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return new ResponseEntity<>(momentService.findAll(auth), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/moments/{id}")
     ResponseEntity<MomentResDto> getById(@PathVariable Long id){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         var moment = momentService.findById(id, auth);
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }
@@ -43,14 +48,14 @@ public class MomentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/moments")
     MomentResDto create(@RequestBody MomentReqDto momentReqDto){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return momentService.create(momentReqDto, auth);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/moments/{id}")
     ResponseEntity<MomentResDto> update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         var moment = momentService.update(momentReqDto,id, auth);
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }
@@ -58,7 +63,7 @@ public class MomentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/moments/{id}")
     ResponseEntity<MomentResDto> delete(@PathVariable Long id){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         var moment = momentService.delete(id, auth);
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }
@@ -67,28 +72,28 @@ public class MomentController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping(value="/moments", params="search")
     List<MomentResDto> getSearch(@RequestParam String search){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return momentService.findByDescriptionOrImgUrlOrLocationContaining(search, auth);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/users/{id}/moments")
     List<MomentResDto> getUserMoments(@PathVariable Long id){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return momentService.getUserMoments(id,auth);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/fav-moments")
     List <MomentResDto> getUserFavMoments(){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return momentService.getUserFavMoments(auth);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/saved-moments")
     List <MomentResDto> getUserSavedMoments(){
-        User auth = authenticationFacade.getAuthUser();
+        User auth = this.getAuth();
         return momentService.getUserSavedMoments(auth);
     }
 }

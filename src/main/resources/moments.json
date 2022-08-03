@@ -3,66 +3,66 @@
     "description": "morning",
     "location": "la garriga, catalunya",
     "imgUrl": "https://images.unsplash.com/photo-1591745742384-ee81ec590924?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=1170&q=80",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "rainy day",
     "location": "la garriga, catalunya",
     "imgUrl": "https://images.unsplash.com/photo-1501186758051-167ca3c0fde8?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=387&q=80",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description":"removing the dust",
     "location": "la garriga, catalunya",
     "imgUrl": "https://images.unsplash.com/photo-1580797280620-3c91a25138ed?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=388&q=80" ,
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "best",
     "location": "la garriga, catalunya",
     "imgUrl": "https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=387&q=80",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "of",
     "location": "la garriga, catalunya",
     "imgUrl":"https://images.unsplash.com/photo-1582332205846-bf7627cae190?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=870&q=80" ,
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "summer",
     "location": "la garriga, catalunya",
     "imgUrl": "https://images.unsplash.com/photo-1589984662646-e7b2e4962f18?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=870&q=80",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "llafranc",
     "location": "llafranc",
     "imgUrl": "https://images.unsplash.com/photo-1571278103921-ca18155162e2?ixlib=rb-1.2.1&ixid=mnwxmja3fdb8mhxwag90by1wywdlfhx8fgvufdb8fhx8&auto=format&fit=crop&w=1332&q=80",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "peratallada",
     "location": "peratallada",
     "imgUrl": "https://guias-viajar.com/wp-content/uploads/2018/06/costa-brava-peratallada-002.jpg",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "calella",
     "location": "calella",
     "imgUrl": "https://cdn.pixabay.com/photo/2015/01/25/21/23/sea-612111_960_720.jpg",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "llafranc",
     "location": "llafranc",
     "imgUrl": "https://visitpalafrugell.cat/wp-content/uploads/2014/04/llafranc2.jpg",
-    "userId": 2
+    "username": "afonttorres"
   },
   {
     "description": "rebelions spaceship",
     "location": "space",
     "imgUrl": "https://i.pinimg.com/originals/73/9d/e4/739de46f9247b62e531db01ba79397d0.jpg",
-    "userId": 3
+    "username": "nfont4"
   }
 ]

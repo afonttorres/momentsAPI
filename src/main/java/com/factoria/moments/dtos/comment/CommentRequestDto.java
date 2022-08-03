@@ -8,5 +8,4 @@ import lombok.Data;
 public class CommentRequestDto {
     private String comment;
     private Long momentId;
-    private Long userId;
 }
