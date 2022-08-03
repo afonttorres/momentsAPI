@@ -16,7 +16,7 @@ public class AuthenticationFacade implements IAuthenticationFacade{
 
     @Override
     public User getAuthUser() {
-        var userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        return authRepository.findByUsername(userName).get();
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return authRepository.findByUsername(username).get();
     }
 }

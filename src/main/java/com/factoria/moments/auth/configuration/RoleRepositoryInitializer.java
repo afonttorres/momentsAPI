@@ -35,7 +35,7 @@ public class RoleRepositoryInitializer {
 
         List<Role> roles = List.of(
                 new Role(1, Role.RoleName.ROLE_ADMIN),
-                new Role(3, Role.RoleName.ROLE_USER)
+                new Role(2, Role.RoleName.ROLE_USER)
         );
 
         roleRepository.saveAll(roles);
