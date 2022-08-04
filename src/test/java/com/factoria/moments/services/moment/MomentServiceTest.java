@@ -2,7 +2,6 @@ package com.factoria.moments.services.moment;
 
 import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
-import com.factoria.moments.dtos.user.response.UserResDtoMoment;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.MomentMapper;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
@@ -51,7 +49,7 @@ class MomentServiceTest {
         var user = new User();
         user.setId(1L);
         Mockito.when(momentsRepository.findById(any(Long.class))).thenReturn(Optional.of(moment));
-        var sut = momentService.findById(1L, user);
+        var sut = momentService.momentValidation(1L, user);
         assertThat(sut.getDescription(),  equalTo(moment.getDescription()));
     }
 
@@ -59,7 +57,7 @@ class MomentServiceTest {
     void findByIdThrowsException(){
         var momentService = new MomentService(momentsRepository);
         Exception ex = assertThrows(NotFoundException.class, ()->{
-            momentService.findById(1L, new User());
+            momentService.momentValidation(1L, new User());
         });
         String resmsg = "Moment Not Found";
         var sut = ex.getMessage();

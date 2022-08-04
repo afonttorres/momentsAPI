@@ -45,4 +45,23 @@ public class MomentMapper {
         moments.forEach(Moment -> res.add(this.mapToRes(Moment, auth)));
         return res;
     }
+
+    public MomentResDto mapToRes(Moment moment){
+        MomentResDto resMoment = new MomentResDto();
+        resMoment.setDescription(moment.getDescription());
+        resMoment.setLocation(moment.getLocation());
+        resMoment.setImgUrl(moment.getImgUrl());
+        resMoment.setLikesCount(moment.likesCount());
+        resMoment.setSavesCount(moment.savesCount());
+        resMoment.setCommentsCount(moment.commentsCount());
+        resMoment.setId(moment.getId());
+        resMoment.setCreator(new UserMapper().mapUserToResDtoMoment(moment.getCreator()));
+        return  resMoment;
+    }
+
+    public List<MomentResDto> mapMultipleMomentsToRes(List<Moment> moments){
+        List<MomentResDto> res = new ArrayList<>();
+        moments.forEach(Moment -> res.add(this.mapToRes(Moment)));
+        return res;
+    }
 }

@@ -19,14 +19,11 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/users")
     ResponseEntity<List<UserNoPassResDto>> getAll(){
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/users/{id}")
     ResponseEntity<UserNoPassResDto> getById(@PathVariable Long id){
         return new ResponseEntity<>(userService.getById(id), HttpStatus.OK);

@@ -7,7 +7,6 @@ import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
 import com.factoria.moments.mappers.SaveMapper;
 import com.factoria.moments.models.Save;
-import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.ISavesRepository;
 import com.factoria.moments.services.moment.IMomentService;
 import org.springframework.stereotype.Service;
@@ -43,9 +42,9 @@ public class SaveService implements ISaveService{
     public boolean toggleSave(SaveReqDto req) {
         var moment = momentService.momentValidation(req.getMomentId());
         var saver = authenticationFacade.getAuthUser();
-        if(saver == null) throw new NotFoundException("User Not Found", "U-404");
-        if(moment.getCreator() == saver) throw new BadRequestException("Moment creator can't save its own moment", "M-005");
-        Save save = new SaveMapper().mapReqToSave(saver, moment);
+        if(saver.isEmpty()) throw new NotFoundException("User Not Found", "U-404");
+        if(moment.getCreator() == saver.get()) throw new BadRequestException("Moment creator can't save its own moment", "M-005");
+        Save save = new SaveMapper().mapReqToSave(saver.get(), moment);
         var found = this.checkIfLikeAlreadyExists(save);
         if(found.isPresent()){
             return this.unsave(found.get());

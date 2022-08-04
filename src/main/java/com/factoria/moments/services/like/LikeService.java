@@ -41,9 +41,9 @@ public class LikeService implements ILikeService{
     public boolean toggleLike(LikeReqDto req) {
         var moment = momentService.momentValidation(req.getMomentId());
         var liker =authenticationFacade.getAuthUser();
-        if(liker == null) throw new NotFoundException("User Not Found", "U-404");
-        if(moment.getCreator() == liker) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;
-        Like like = new LikeMapper().mapReqToLike(liker, moment);
+        if(liker.isEmpty()) throw new NotFoundException("User Not Found", "U-404");
+        if(moment.getCreator() == liker.get()) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;
+        Like like = new LikeMapper().mapReqToLike(liker.get(), moment);
         var found = this.checkIfLikeAlreadyExists(like);
         if(found.isPresent()){
             return this.dislike(found.get());

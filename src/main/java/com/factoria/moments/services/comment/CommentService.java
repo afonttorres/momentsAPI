@@ -12,6 +12,7 @@ import com.factoria.moments.services.moment.IMomentService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CommentService implements ICommentService{
@@ -39,9 +40,9 @@ public class CommentService implements ICommentService{
     @Override
     public CommentResDto create(CommentRequestDto newComment) {
         var moment = momentService.momentValidation(newComment.getMomentId());
-        User creator = authenticationFacade.getAuthUser();
-        if(creator == null) throw new NotFoundException("User Not Found", "U-404");
-        Comment comment = new CommentMapper().mapReqToComment(newComment, moment, creator);
+        Optional<User> creator = authenticationFacade.getAuthUser();
+        if(creator.isEmpty()) throw new NotFoundException("User Not Found", "U-404");
+        Comment comment = new CommentMapper().mapReqToComment(newComment, moment, creator.get());
         this.commentRepository.save(comment);
         return new CommentMapper().mapCommentToRes(comment);
     }

@@ -32,7 +32,6 @@ public class CommentController {
         return new ResponseEntity<>(commentService.create(req), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/moments/{id}/comments")
     ResponseEntity<List<CommentResDto>> getMomentComments(@PathVariable Long id){
         return new ResponseEntity<>(commentService.getByMoment(id), HttpStatus.OK);

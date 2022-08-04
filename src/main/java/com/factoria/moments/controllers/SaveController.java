@@ -26,7 +26,6 @@ public class SaveController {
         return new ResponseEntity<>(saves, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/moments/{id}/saves")
     ResponseEntity<List<SaveResDto>> getMomentLikes(@PathVariable Long id){
         var saves = saveService.getMomentSaves(id);

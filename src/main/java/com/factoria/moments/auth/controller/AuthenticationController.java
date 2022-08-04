@@ -50,9 +50,16 @@ public class AuthenticationController {
 
     @PostMapping("/signin")
     public ResponseEntity<?>  authenticateUser(@RequestBody LoginRequest loginReq){
+
+        System.out.println(" EXISTS? :"+authRepository.existsByUsername(loginReq.getUsername()));
+        if(!authRepository.existsByUsername(loginReq.getUsername())){
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("User with username "+loginReq.getUsername()+" does not exist!"));
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginReq.getUsername(), loginReq.getPassword()));
-
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);

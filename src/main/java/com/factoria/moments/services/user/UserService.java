@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,9 +46,9 @@ public class UserService implements IUserService{
 
     @Override
     public UserNoPassResDto update(UserUpdateReqDto userUpdateReqDto, Long id) {
-        User auth = authenticationFacade.getAuthUser();
-        if(auth.getId() != id) throw new BadRequestException("Incorrect User", "U-002");
-        var user = new UserMapper().mapPutReqToUser(userUpdateReqDto, auth);
+        Optional<User> auth = authenticationFacade.getAuthUser();
+        if(auth.get().getId() != id) throw new BadRequestException("Incorrect User", "U-002");
+        var user = new UserMapper().mapPutReqToUser(userUpdateReqDto, auth.get());
         return new UserMapper().mapUserToNoPassResDto(userRepository.save(user));
     }
 

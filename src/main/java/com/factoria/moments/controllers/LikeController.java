@@ -26,7 +26,7 @@ public class LikeController {
         var likes = likeService.getAll();
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
-    @PreAuthorize("hasRole('ROLE_USER')")
+
     @GetMapping("/moments/{id}/likes")
     ResponseEntity<List<LikeResDto>> getMomentLikes(@PathVariable Long id){
         var likes = likeService.getMomentLikes(id);

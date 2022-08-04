@@ -5,6 +5,8 @@ import com.factoria.moments.repositories.IAuthRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class AuthenticationFacade implements IAuthenticationFacade{
 
@@ -16,10 +18,8 @@ public class AuthenticationFacade implements IAuthenticationFacade{
 
 
     @Override
-    public User getAuthUser() {
+    public Optional<User> getAuthUser() {
         var username = SecurityContextHolder.getContext().getAuthentication().getName();
-//        var auth =  authRepository.findByUsername(username);
-//        if(auth.isEmpty()) throw new NotFoundException("User Not Found", "M-404");
-        return authRepository.findByUsername(username).get();
+        return authRepository.findByUsername(username);
     }
 }
