@@ -8,7 +8,5 @@ import java.util.List;
 public interface ISaveService {
     List<SaveResDto> getAll();
     List<SaveResDto> getMomentSaves(Long id);
-
-
     boolean toggleSave(SaveReqDto save);
 }
