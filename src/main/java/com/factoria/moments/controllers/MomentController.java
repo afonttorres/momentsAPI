@@ -32,11 +32,13 @@ public class MomentController {
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/moments")
     MomentResDto create(@RequestBody MomentReqDto momentReqDto){
         return momentService.create(momentReqDto);
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/moments/{id}")
     ResponseEntity<MomentResDto> update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
         var moment = momentService.update(momentReqDto,id);

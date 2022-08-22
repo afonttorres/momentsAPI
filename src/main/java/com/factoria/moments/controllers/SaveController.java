@@ -33,9 +33,9 @@ public class SaveController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/saves")
-    ResponseEntity<Boolean> save(@RequestBody SaveReqDto save){
-        var isSaved = saveService.toggleSave(save);
+    @PostMapping("/moments/{id}/saves")
+    ResponseEntity<Boolean> save(@PathVariable Long id){
+        var isSaved = saveService.toggleSave(id);
         return new ResponseEntity<>(isSaved, HttpStatus.OK);
     }
 }

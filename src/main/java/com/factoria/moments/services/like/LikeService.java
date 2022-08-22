@@ -1,7 +1,6 @@
 package com.factoria.moments.services.like;
 
 import com.factoria.moments.auth.facade.IAuthenticationFacade;
-import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.dtos.likes.LikeResDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.exceptions.NotFoundException;
@@ -38,8 +37,8 @@ public class LikeService implements ILikeService{
     }
 
     @Override
-    public boolean toggleLike(LikeReqDto req) {
-        var moment = momentService.momentValidation(req.getMomentId());
+    public boolean toggleLike(Long id) {
+        var moment = momentService.momentValidation(id);
         var liker =authenticationFacade.getAuthUser();
         if(liker.isEmpty()) throw new NotFoundException("User Not Found", "U-404");
         if(moment.getCreator() == liker.get()) throw new BadRequestException("Moment creator can't like its own moment", "M-004"); ;

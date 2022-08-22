@@ -29,10 +29,11 @@ public class UserService implements IUserService{
     @Override
     public List<UserNoPassResDto> findAll() {
         var users = this.userRepository.findAll();
-        if(users.size() <= 1) users = new ArrayList<>();
-        if(users.size() > 1){
-          users = users.stream().filter(User -> !User.getUsername().equals("admin")).collect(Collectors.toList());
-        }
+        var auth = this.authenticationFacade.getAuthUser();
+        users = users.stream()
+                .filter(User -> auth.isPresent() ? !User.getUsername().equals("admin") && User != auth.get() : !User.getUsername().equals("admin"))
+                .collect(Collectors.toList());
+        if (users.size() == 0) users = new ArrayList<>();
         return new UserMapper().mapMultipleUsersToNoPassResDto( users);
     }
 

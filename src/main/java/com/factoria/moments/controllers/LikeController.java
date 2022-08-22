@@ -1,6 +1,5 @@
 package com.factoria.moments.controllers;
 
-import com.factoria.moments.dtos.likes.LikeReqDto;
 import com.factoria.moments.dtos.likes.LikeResDto;
 import com.factoria.moments.services.like.ILikeService;
 import org.springframework.http.HttpStatus;
@@ -34,9 +33,10 @@ public class LikeController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/likes")
-    ResponseEntity<Boolean> like(@RequestBody LikeReqDto like){
-        var isLiked = likeService.toggleLike(like);
+    @PostMapping("/moments/{id}/likes")
+    ResponseEntity<Boolean> like(@PathVariable Long id){
+        System.out.println(id);
+        var isLiked = likeService.toggleLike(id);
         return new ResponseEntity<>(isLiked, HttpStatus.OK);
     }
 }
