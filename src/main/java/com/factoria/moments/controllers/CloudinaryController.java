@@ -1,6 +1,7 @@
 package com.factoria.moments.controllers;
 
 import com.factoria.moments.dtos.cloudinary.CloudinaryMessage;
+import com.factoria.moments.dtos.cloudinary.ImageResponseDto;
 import com.factoria.moments.exceptions.BadRequestException;
 import com.factoria.moments.models.Image;
 import com.factoria.moments.services.cloudinary.ICloudinaryService;
@@ -37,6 +38,12 @@ public class CloudinaryController {
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
 
+    @GetMapping("/images/{id}")
+    public ResponseEntity<Image> getById(@PathVariable Long id){
+        Image image = imageService.findById(id);
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<?> upload(@RequestParam MultipartFile multipartFile) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(multipartFile.getInputStream());
@@ -44,7 +51,7 @@ public class CloudinaryController {
         Map result = cloudinaryService.upload(multipartFile);
         Image image = new Image(result.get("original_filename").toString(), result.get("url").toString(), result.get("public_id").toString());
         imageService.save(image);
-        return new ResponseEntity<>(new CloudinaryMessage("Image uploaded!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ImageResponseDto("Image uploaded!", image.getImgUrl(), image.getId()), HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
