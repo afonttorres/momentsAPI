@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -14,10 +15,12 @@ import java.util.List;
 public class ImageService implements IImageService{
 
     IImageRepository imageRepository;
+    ICloudinaryService cloudinaryService;
 
     @Autowired
-    public ImageService(IImageRepository imageRepository) {
+    public ImageService(IImageRepository imageRepository, ICloudinaryService cloudinaryService) {
         this.imageRepository = imageRepository;
+        this.cloudinaryService = cloudinaryService;
     }
 
     @Override
@@ -49,5 +52,14 @@ public class ImageService implements IImageService{
         if(image.isEmpty()) throw new NotFoundException("Image Not Found", "I-404");
         imageRepository.delete(image.get());
         return  true;
+    }
+
+    @Override
+    public boolean deleteByUrl(String url) throws IOException {
+        var image = imageRepository.findByImgUrl(url).stream().findFirst();
+        if(image.isEmpty()) throw new NotFoundException("Image Not Found","I-404");
+        cloudinaryService.delete(image.get().getImgId());
+        imageRepository.delete(image.get());
+        return true;
     }
 }

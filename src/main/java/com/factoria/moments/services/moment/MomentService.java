@@ -9,8 +9,10 @@ import com.factoria.moments.mappers.MomentMapper;
 import com.factoria.moments.models.Moment;
 import com.factoria.moments.models.User;
 import com.factoria.moments.repositories.IMomentsRepository;
+import com.factoria.moments.services.cloudinary.IImageService;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +21,12 @@ public class MomentService implements IMomentService{
 
     IMomentsRepository momentsRepository;
     IAuthenticationFacade authenticationFacade;
+    IImageService imageService;
 
-    public MomentService(IMomentsRepository momentsRepository, IAuthenticationFacade authenticationFacade){
+    public MomentService(IMomentsRepository momentsRepository, IAuthenticationFacade authenticationFacade , IImageService imageService){
         this.momentsRepository = momentsRepository;
         this.authenticationFacade = authenticationFacade;
+        this.imageService = imageService;
     }
 
     private User getAuth(){
@@ -62,11 +66,14 @@ public class MomentService implements IMomentService{
     }
 
     @Override
-    public MomentResDto update(MomentReqDto momentReqDto, Long id) {
+    public MomentResDto update(MomentReqDto momentReqDto, Long id) throws IOException {
         var auth = this.getAuth();
         var moment = momentsRepository.findById(id);
         if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
         if(!moment.get().getCreator().getId().equals(auth.getId())) throw new BadRequestException("Incorrect User", "M-001");
+        if(moment.get().getImgUrl() != momentReqDto.getImgUrl()){
+            imageService.deleteByUrl(moment.get().getImgUrl());
+        }
         Moment updatedMoment = new MomentMapper().mapReqToExistingMoment(momentReqDto, moment.get());
         momentsRepository.save(updatedMoment);
         MomentResDto momentRes = new MomentMapper().mapToRes(updatedMoment, auth);
@@ -74,12 +81,13 @@ public class MomentService implements IMomentService{
     }
 
     @Override
-    public MomentResDto delete(Long id) {
+    public MomentResDto delete(Long id) throws IOException {
         var auth = this.getAuth();
         var moment = momentsRepository.findById(id);
         if(moment.isEmpty()) throw new NotFoundException("Moment Not Found", "M-404");
         if(!moment.get().getCreator().getId().equals(auth.getId())) throw new BadRequestException("Incorrect User", "M-001");
         MomentResDto resMoment=  new MomentMapper().mapToRes(moment.get(), auth);
+        imageService.deleteByUrl(moment.get().getImgUrl());
         momentsRepository.delete(moment.get());
         return resMoment;
     }
@@ -108,4 +116,5 @@ public class MomentService implements IMomentService{
         var auth = this.getAuth();
         return new MomentMapper().mapMultipleMomentsToRes(momentsRepository.findSaves(auth.getId()),auth);
     }
+
 }

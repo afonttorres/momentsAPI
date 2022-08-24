@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -40,14 +41,14 @@ public class MomentController {
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/moments/{id}")
-    ResponseEntity<MomentResDto> update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id){
+    ResponseEntity<MomentResDto> update(@RequestBody MomentReqDto momentReqDto, @PathVariable Long id) throws IOException {
         var moment = momentService.update(momentReqDto,id);
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
     @DeleteMapping("/moments/{id}")
-    ResponseEntity<MomentResDto> delete(@PathVariable Long id){
+    ResponseEntity<MomentResDto> delete(@PathVariable Long id) throws IOException {
         var moment = momentService.delete(id);
         return new ResponseEntity<>(moment, HttpStatus.OK);
     }

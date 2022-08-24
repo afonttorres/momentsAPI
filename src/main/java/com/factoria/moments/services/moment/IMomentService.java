@@ -4,6 +4,7 @@ import com.factoria.moments.dtos.moment.MomentReqDto;
 import com.factoria.moments.dtos.moment.MomentResDto;
 import com.factoria.moments.models.Moment;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IMomentService {
@@ -15,13 +16,13 @@ public interface IMomentService {
 
     MomentResDto create(MomentReqDto moment);
 
-    MomentResDto update(MomentReqDto momentReqDto, Long id);
+    MomentResDto update(MomentReqDto momentReqDto, Long id) throws IOException;
 
 //    MomentResDto like(Long id, User auth);
 //
 //    MomentResDto save(Long id, User auth);
 
-    MomentResDto delete(Long id);
+    MomentResDto delete(Long id) throws IOException;
 
 
     List<MomentResDto> findByDescriptionOrImgUrlOrLocationContaining(String search);
